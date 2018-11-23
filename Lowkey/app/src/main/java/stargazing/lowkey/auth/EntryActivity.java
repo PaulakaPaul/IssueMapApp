@@ -8,7 +8,12 @@ import android.widget.TextView;
 
 import com.jaeger.library.StatusBarUtil;
 
+import org.json.JSONObject;
+
+import stargazing.lowkey.LowkeyApplication;
+import stargazing.lowkey.MainActivity;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.auth.login.LoginActivity;
 import stargazing.lowkey.auth.register.RegisterActivity1EP;
 
@@ -24,6 +29,8 @@ public class EntryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_entry);
         StatusBarUtil.setTransparent(this);
         initUI();
+
+        goToMainIfLoggedIn();
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,5 +59,15 @@ public class EntryActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         register = findViewById(R.id.signup);
         facebooklogin = findViewById(R.id.facebooklogin);
+    }
+
+    private void goToMainIfLoggedIn() {
+        LowkeyApplication.instance.isUserLoggedIn(new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+                Intent intent = new Intent(EntryActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

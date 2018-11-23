@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.navigation_home:
                     fm.beginTransaction().hide(active).show(profileFragment).commit();
                     active = profileFragment;
-                    LowkeyApplication.currentUserManager.postLoginUser(LowkeyApplication.loginModel, null);
                     return true;
                 case R.id.navigation_dashboard:
                     fm.beginTransaction().hide(active).show(issuesFragment).commit();

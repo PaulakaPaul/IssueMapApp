@@ -75,7 +75,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
         ArrayAdapter<CharSequence> spinnerAdapter1 = ArrayAdapter.
                 createFromResource(this, R.array.radius, android.R.layout.simple_spinner_item);
         spinnerAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRadius.setAdapter(spinnerAdapter);
+        spinnerRadius.setAdapter(spinnerAdapter1);
 
 
     }

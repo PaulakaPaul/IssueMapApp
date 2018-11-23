@@ -18,6 +18,7 @@ import stargazing.lowkey.utils.SpUtils;
 public class UserManager {
     public static final String RESPONSE_DATA_KEY = "Data";
     public static final String RESPONSE_TOKEN_KEY = "access_token";
+    public static final String RESPONSE_SUCCESSFUL_KEY = "Success";
 
     public static final String SHARED_PREF_EMAIL_KEY = "email";
     public static final String SHARED_PREF_PASS_KEY = "password";
@@ -30,9 +31,13 @@ public class UserManager {
 
     private String token;
 
-    public UserManager(String email) {
-        this.email = email;
+    public UserManager() {
         this.userView = new UserView();
+    }
+
+    public UserManager(String email) {
+        this();
+        this.email = email;
     }
 
     public UserManager(UserModel userModel, String email) {
@@ -45,7 +50,7 @@ public class UserManager {
         userView.getIsAuthorized(email, handleUserModel);
     }
 
-    public boolean hasChachedCredentials() {
+    public static boolean hasCachedCredentials() {
         SpUtils spUtils = new SpUtils();
         String email = spUtils.loadString(SHARED_PREF_EMAIL_KEY);
         String password = spUtils.loadString(SHARED_PREF_PASS_KEY);
@@ -54,12 +59,12 @@ public class UserManager {
                 !password.equals(SHARED_PREF_EMPTY_VALUE);
     }
 
-    public String getCachedEmail() {
+    public static String getCachedEmail() {
         SpUtils spUtils = new SpUtils();
         return spUtils.loadString(SHARED_PREF_EMAIL_KEY);
     }
 
-    public String getCachedPassword() {
+    public static String getCachedPassword() {
         SpUtils spUtils = new SpUtils();
         return spUtils.loadString(SHARED_PREF_PASS_KEY);
     }
@@ -69,8 +74,21 @@ public class UserManager {
         userView.getUserByEmail(email, handleUserModel);
     }
 
-    public void postRegisterUser(RegisterModel registerModel, OnSuccessHandler response) {
-        userView.postRegisterUser(registerModel, response);
+    public void postRegisterUser(RegisterModel registerModel, final OnSuccessHandler onSuccessHandler) {
+        OnSuccessHandler handleOnRegisterSuccess = new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+                if (isSuccessful(response)) {
+                    if (onSuccessHandler != null)
+                        onSuccessHandler.handle(response);
+                } else {
+                    if (onSuccessHandler != null)
+                        onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                }
+            }
+        };
+
+        userView.postRegisterUser(registerModel, handleOnRegisterSuccess);
     }
 
     public void postLoginUser(final LoginModel loginModel, final OnSuccessHandler onSuccessHandler) {
@@ -80,15 +98,18 @@ public class UserManager {
                 cacheCredentials(loginModel.getEmail(), loginModel.getPassword());
                 token = getTokenFromResponse(response);
 
-                if(onSuccessHandler!=null)
-                    onSuccessHandler.handle(response);
+                if (onSuccessHandler != null)
+                    if (token != null)
+                        onSuccessHandler.handle(response);
+                    else
+                        onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
             }
         };
 
         userView.postLoginUser(loginModel, handleLoginSuccess);
     }
 
-    public void signOut() {
+    public void logout() {
         userView = null;
         userModel = null;
         email = null;
@@ -97,6 +118,14 @@ public class UserManager {
         SpUtils spUtils = new SpUtils();
         spUtils.save(SHARED_PREF_EMAIL_KEY, SHARED_PREF_EMPTY_VALUE);
         spUtils.save(SHARED_PREF_PASS_KEY, SHARED_PREF_EMPTY_VALUE);
+    }
+
+    private boolean isSuccessful(JSONObject jsonObject) {
+        try {
+            return jsonObject.getBoolean(RESPONSE_SUCCESSFUL_KEY);
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
     private void cacheCredentials(String email, String password) {
@@ -116,16 +145,19 @@ public class UserManager {
     }
 
     private OnSuccessHandler getOnSuccessHandlerForUserModelRequest(final OnSuccessHandler onSuccessHandler) {
-         return new OnSuccessHandler() {
+        return new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
                 // Populate userModel
-                if (!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                if (isSuccessful(response)) {
                     userModel = getUserModelFromResponse(response);
-                }
 
-                if (onSuccessHandler != null)
-                    onSuccessHandler.handle(response);
+                    if (onSuccessHandler != null)
+                        onSuccessHandler.handle(response);
+
+                } else if(onSuccessHandler != null) {
+                    onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                }
             }
         };
     }
@@ -145,5 +177,9 @@ public class UserManager {
 
     public String getToken() {
         return token;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

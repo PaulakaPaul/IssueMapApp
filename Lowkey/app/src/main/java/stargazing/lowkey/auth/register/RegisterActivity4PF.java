@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.LowkeyApplication;
+import stargazing.lowkey.MainActivity;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
@@ -41,7 +42,7 @@ public class RegisterActivity4PF extends AppCompatActivity {
     private String fullname;
     private int age;
     private String gender;
-    private String radius;
+    private int radius;
     public Double latitude, longitude;
 
 
@@ -82,7 +83,7 @@ public class RegisterActivity4PF extends AppCompatActivity {
         gender = getIntent().getStringExtra("gender");
         longitude = getIntent().getDoubleExtra("longitude",0.0f);
         latitude = getIntent().getDoubleExtra("latitude",0.0f);
-        radius = getIntent().getStringExtra("radius");
+        radius = Integer.parseInt(getIntent().getStringExtra("radius"));
     }
 
     private void setOnClickListeners() {
@@ -190,17 +191,29 @@ public class RegisterActivity4PF extends AppCompatActivity {
 
     private void register(){
         final RegisterModel registerModel = new RegisterModel(fullname, email, latitude, longitude,
-                5, 22, mapGender(gender), password);
+                radius, age, mapGender(gender), password);
 
         LowkeyApplication.currentUserManager.postRegisterUser(registerModel, new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
-                if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
                     Toast.makeText(RegisterActivity4PF.this,
                             "Your account was created succesfully",
                             Toast.LENGTH_LONG).show();
+
+                    goToMainActivity();
+                }
+                else
+                    Toast.makeText(RegisterActivity4PF.this,
+                            "Your account could not be created",
+                            Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void goToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private int mapGender(String gender) {

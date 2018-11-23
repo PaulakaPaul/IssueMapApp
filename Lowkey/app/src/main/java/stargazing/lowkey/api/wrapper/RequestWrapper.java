@@ -1,5 +1,6 @@
 package stargazing.lowkey.api.wrapper;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -187,6 +188,10 @@ public abstract class RequestWrapper {
         if(queryParameters == null)
             return absoluteURL;
 
+        String stringQueryParameters = getQueryStrings(queryParameters);
+        if(TextUtils.isEmpty(stringQueryParameters))
+            return absoluteURL;
+
         return absoluteURL + "?" + getQueryStrings(queryParameters);
     }
 
@@ -196,13 +201,17 @@ public abstract class RequestWrapper {
 
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<?, ?> entry : queryParameters.entrySet()) {
-                if (sb.length() > 0) {
-                    sb.append("&");
+                if (entry.getKey() != null && entry.getValue() != null) {
+
+                    if (sb.length() > 0) {
+                        sb.append("&");
+                    }
+
+                    sb.append(String.format("%s=%s",
+                            urlEncodeUTF8(entry.getKey().toString()),
+                            urlEncodeUTF8(entry.getValue().toString())
+                    ));
                 }
-                sb.append(String.format("%s=%s",
-                        urlEncodeUTF8(entry.getKey().toString()),
-                        urlEncodeUTF8(entry.getValue().toString())
-                ));
             }
         return sb.toString();
     }
