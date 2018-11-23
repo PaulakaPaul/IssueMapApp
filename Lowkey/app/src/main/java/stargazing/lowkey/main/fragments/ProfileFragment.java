@@ -1,14 +1,17 @@
 package stargazing.lowkey.main.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import stargazing.lowkey.R;
+import stargazing.lowkey.auth.EntryActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +22,7 @@ import stargazing.lowkey.R;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -27,6 +31,8 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    View rootView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,7 +71,19 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        TextView test = rootView.findViewById(R.id.test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext().getApplicationContext(), EntryActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

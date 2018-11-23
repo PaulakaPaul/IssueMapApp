@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="stargazing.lowkey">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,7 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.EntryActivity"></activity>
+        <activity android:name=".auth.EntryActivity" />
+        <activity android:name=".auth.RegisterActivity1EP" />
+        <activity android:name=".auth.RegisterActivity2FL" />
+        <activity android:name=".auth.RegisterActivity3AG" />
+        <activity android:name=".auth.RegisterActivity4PF"></activity>
     </application>
 
 </manifest>
