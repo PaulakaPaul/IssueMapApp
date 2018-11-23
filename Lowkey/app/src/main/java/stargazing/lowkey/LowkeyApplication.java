@@ -41,6 +41,8 @@ public class LowkeyApplication extends Application {
                     if(UserManager.hasCachedCredentials())
                         if(loggedInHandler != null)
                             loggedInHandler.handle(response);
+                    else if(loggedInHandler != null)
+                        loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
             }
         });
     }

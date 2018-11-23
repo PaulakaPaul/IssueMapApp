@@ -1,9 +1,11 @@
 package stargazing.lowkey.auth;
 
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jaeger.library.StatusBarUtil;
@@ -14,10 +16,14 @@ import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.MainActivity;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.login.LoginActivity;
 import stargazing.lowkey.auth.register.RegisterActivity1EP;
 
 public class EntryActivity extends AppCompatActivity {
+
+    private ProgressBar progressBar;
+    private ConstraintLayout constraintLayout;
 
     private TextView login;
     private TextView register;
@@ -30,6 +36,7 @@ public class EntryActivity extends AppCompatActivity {
         StatusBarUtil.setTransparent(this);
         initUI();
 
+        switchView(true);
         goToMainIfLoggedIn();
 
         register.setOnClickListener(new View.OnClickListener() {
@@ -56,17 +63,29 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        progressBar = findViewById(R.id.progressBar);
+        constraintLayout = findViewById(R.id.constraintLayout);
+
         login = findViewById(R.id.login);
         register = findViewById(R.id.signup);
         facebooklogin = findViewById(R.id.facebooklogin);
+    }
+
+    private void switchView(boolean isLoading) {
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        constraintLayout.setVisibility(isLoading ? View.GONE : View.VISIBLE);
     }
 
     private void goToMainIfLoggedIn() {
         LowkeyApplication.instance.isUserLoggedIn(new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
-                Intent intent = new Intent(EntryActivity.this, MainActivity.class);
-                startActivity(intent);
+                if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                    Intent intent = new Intent(EntryActivity.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    switchView(false);
+                }
             }
         });
     }
