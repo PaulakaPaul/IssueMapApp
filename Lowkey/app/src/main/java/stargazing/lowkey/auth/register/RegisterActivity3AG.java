@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.jaeger.library.StatusBarUtil;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,6 +28,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
     private ImageView back;
     private DatePicker dpBirth;
     private Spinner spinnerGender;
+    private Spinner spinnerRadius;
     private String email;
     private String password;
     private String fullname;
@@ -60,6 +63,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
     private void initUI() {
         dpBirth = findViewById(R.id.dpBirth);
         spinnerGender = findViewById(R.id.spinnerGender);
+        spinnerRadius = findViewById(R.id.spinnerGender2);
         next = findViewById(R.id.next2);
         back = findViewById(R.id.back2);
 
@@ -67,6 +71,11 @@ public class RegisterActivity3AG extends AppCompatActivity {
                 createFromResource(this, R.array.genderArray, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(spinnerAdapter);
+
+        ArrayAdapter<CharSequence> spinnerAdapter1 = ArrayAdapter.
+                createFromResource(this, R.array.radius, android.R.layout.simple_spinner_item);
+        spinnerAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRadius.setAdapter(spinnerAdapter);
 
 
     }
@@ -92,6 +101,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
                     intent.putExtra("fullname",fullname);
                     intent.putExtra("age",getAge());
                     intent.putExtra("gender",spinnerGender.getSelectedItem().toString());
+                    intent.putExtra("radius",spinnerRadius.getSelectedItem().toString());
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                 }else
@@ -108,14 +118,17 @@ public class RegisterActivity3AG extends AppCompatActivity {
         return true;
     }
 
-    private String getAge(){
+    private int getAge(){
         int day = dpBirth.getDayOfMonth();
         int month = dpBirth.getMonth();
         int year = dpBirth.getYear();
         Calendar calendar = Calendar.getInstance();
         calendar.set(year,month,day);
         Date date = calendar.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(date);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        int an = Calendar.getInstance().get(Calendar.YEAR);
+        int age = an - year;
+        return age;
     }
 }

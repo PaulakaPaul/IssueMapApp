@@ -39,9 +39,9 @@ public class RegisterActivity4PF extends AppCompatActivity {
     private String email;
     private String password;
     private String fullname;
-    private String age;
+    private int age;
     private String gender;
-
+    private String radius;
     public Double latitude, longitude;
 
 
@@ -78,10 +78,11 @@ public class RegisterActivity4PF extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         password = getIntent().getStringExtra("password");
         fullname = getIntent().getStringExtra("fullname");
-        age = getIntent().getStringExtra("age");
+        age = getIntent().getIntExtra("age",0);
         gender = getIntent().getStringExtra("gender");
         longitude = getIntent().getDoubleExtra("longitude",0.0f);
         latitude = getIntent().getDoubleExtra("latitude",0.0f);
+        radius = getIntent().getStringExtra("radius");
     }
 
     private void setOnClickListeners() {
