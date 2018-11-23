@@ -54,6 +54,16 @@ public class UserManager {
                 !password.equals(SHARED_PREF_EMPTY_VALUE);
     }
 
+    public String getCachedEmail() {
+        SpUtils spUtils = new SpUtils();
+        return spUtils.loadString(SHARED_PREF_EMAIL_KEY);
+    }
+
+    public String getCachedPassword() {
+        SpUtils spUtils = new SpUtils();
+        return spUtils.loadString(SHARED_PREF_PASS_KEY);
+    }
+
     public void getUserModel(OnSuccessHandler onSuccessHandler) {
         OnSuccessHandler handleUserModel = getOnSuccessHandlerForUserModelRequest(onSuccessHandler);
         userView.getUserByEmail(email, handleUserModel);

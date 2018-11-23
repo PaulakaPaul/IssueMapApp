@@ -19,10 +19,16 @@ import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
+import stargazing.lowkey.models.RegisterModel;
 
 public class RegisterActivity4PF extends AppCompatActivity {
 
@@ -77,6 +83,7 @@ public class RegisterActivity4PF extends AppCompatActivity {
         longitude = getIntent().getDoubleExtra("longitude",0.0f);
         latitude = getIntent().getDoubleExtra("latitude",0.0f);
     }
+
     private void setOnClickListeners() {
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -180,5 +187,28 @@ public class RegisterActivity4PF extends AppCompatActivity {
         }
     }
 
-    private void register(){}
+    private void register(){
+        final RegisterModel registerModel = new RegisterModel(fullname, email, latitude, longitude,
+                5, 22, mapGender(gender), password);
+
+        LowkeyApplication.currentUserManager.postRegisterUser(registerModel, new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+                if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                    Toast.makeText(RegisterActivity4PF.this,
+                            "Your account was created succesfully",
+                            Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private int mapGender(String gender) {
+        if(gender.equals("Male"))
+            return 0;
+
+        if(gender.equals("Female"))
+            return 1;
+
+        return 2;
+    }
 }

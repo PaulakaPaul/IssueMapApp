@@ -42,7 +42,6 @@ public class EntryActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
-
             }
         });
 
