@@ -22,6 +22,8 @@ import java.util.Map;
 import stargazing.lowkey.LowkeyApplication;
 
 public abstract class RequestWrapper {
+    public static final JSONObject FAIL_JSON_RESPONSE_VALUE = new JSONObject();
+
     private String baseUrl;
     private String tag;
 
@@ -132,8 +134,11 @@ public abstract class RequestWrapper {
                 } catch (NullPointerException e) {
                     Log.e("stringErrorResponse", "Volley failed");
                 }
-            }
-        })
+
+                if(onSuccessHandler!=null)
+                    onSuccessHandler.handle(FAIL_JSON_RESPONSE_VALUE);
+                }
+            })
         {
             @Override
             public byte[] getBody() throws AuthFailureError {
