@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.jaeger.library.StatusBarUtil;
+
 import stargazing.lowkey.main.fragments.IssuesFragment;
 import stargazing.lowkey.main.fragments.ProfileFragment;
 import stargazing.lowkey.main.fragments.StatisticFragment;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StatusBarUtil.setTransparent(this);
         fm.beginTransaction().add(R.id.main_container, issuesFragment, "2").hide(issuesFragment).commit();
         fm.beginTransaction().add(R.id.main_container, statisticFragment, "3").hide(statisticFragment).commit();
         fm.beginTransaction().add(R.id.main_container, profileFragment, "1").commit();

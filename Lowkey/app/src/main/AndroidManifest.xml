@@ -3,13 +3,15 @@
     package="stargazing.lowkey">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:name=".LowkeyApplication"
@@ -30,10 +32,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".auth.EntryActivity" />
-        <activity android:name=".auth.RegisterActivity1EP" />
-        <activity android:name=".auth.RegisterActivity2FL" />
-        <activity android:name=".auth.RegisterActivity3AG" />
-        <activity android:name=".auth.RegisterActivity4PF"></activity>
+        <activity android:name=".auth.register.RegisterActivity1EP" />
+        <activity android:name=".auth.register.RegisterActivity2FL" />
+        <activity android:name=".auth.register.RegisterActivity3AG" />
+        <activity android:name=".auth.register.RegisterActivity4PF" />
+        <activity android:name=".utils.GPSTrackerActivity" />
+        <activity android:name=".auth.login.LoginActivity"></activity>
     </application>
 
 </manifest>

@@ -6,7 +6,7 @@
     android:background="@drawable/gradient1"
 
     android:layout_height="match_parent"
-    tools:context=".auth.RegisterActivity3AG">
+    tools:context=".auth.register.RegisterActivity3AG">
 
     <TextView
         android:id="@+id/textView4"
@@ -34,17 +34,17 @@
         android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/roundbtn_orangelight"
         android:elevation="15dp"
         android:text="register"
         android:textColor="@android:color/black"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerGender" />
 
     <ImageView
         android:id="@+id/back2"
@@ -77,16 +77,15 @@
     <Spinner
         android:id="@+id/spinnerGender"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="64dp"
         android:layout_marginLeft="64dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="64dp"
         android:layout_marginRight="64dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:paddingBottom="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/next2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dpBirth" />

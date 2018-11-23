@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,8 +35,9 @@ dependencies {
 
     //added
     implementation 'com.google.android.gms:play-services:11.8.0'
-
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.google.android.gms:play-services-location:7.0.0'
+    implementation 'com.jaeger.statusbarutil:library:1.4.0'
     //3rd lib
     implementation 'com.github.florent37:materialtextfield:1.0.7'
 }

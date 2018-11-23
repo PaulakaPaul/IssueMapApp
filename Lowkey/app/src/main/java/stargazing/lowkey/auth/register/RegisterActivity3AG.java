@@ -1,4 +1,4 @@
-package stargazing.lowkey.auth;
+package stargazing.lowkey.auth.register;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,8 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.jaeger.library.StatusBarUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,6 +29,8 @@ public class RegisterActivity3AG extends AppCompatActivity {
     private String email;
     private String password;
     private String fullname;
+    public Double latitude, longitude;
+
 
     private static String ERROR_BAD_EMAIL = "Email or password is not valid !";
 
@@ -36,7 +40,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_activity3_ag);
-
+        StatusBarUtil.setTransparent(this);
         initUI();
 
         getIntentExtras();
@@ -48,6 +52,8 @@ public class RegisterActivity3AG extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         password = getIntent().getStringExtra("password");
         fullname = getIntent().getStringExtra("fullname");
+        longitude = getIntent().getDoubleExtra("longitude",0.0f);
+        latitude = getIntent().getDoubleExtra("latitude",0.0f);
     }
 
 
@@ -80,13 +86,14 @@ public class RegisterActivity3AG extends AppCompatActivity {
             public void onClick(View v) {
                 overridePendingTransition(0, 0);
                 if(readyToGo()) {
-                    Intent intent = new Intent(getApplicationContext(), RegisterActivity2FL.class);
+                    Intent intent = new Intent(getApplicationContext(), RegisterActivity4PF.class);
                     intent.putExtra("email",email);
                     intent.putExtra("password",password);
                     intent.putExtra("fullname",fullname);
                     intent.putExtra("age",getAge());
                     intent.putExtra("gender",spinnerGender.getSelectedItem().toString());
                     startActivity(intent);
+                    overridePendingTransition(0, 0);
                 }else
                     Toast.makeText(getApplicationContext(), ERROR_BAD_EMAIL, ERROR_BAD_EMAIL.length());
             }
@@ -98,7 +105,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"You are too young bro",Toast.LENGTH_SHORT);
             return false;
         }
-        return false;
+        return true;
     }
 
     private String getAge(){
