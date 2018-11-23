@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import stargazing.lowkey.api.wrapper.AccountWrapper;
+import org.json.JSONObject;
+
+import stargazing.lowkey.api.views.AccountView;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,8 +25,12 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
-                    Log.e("STARTED", "YUHUUUU");
-                    new AccountWrapper().getUserByEmail();
+                    new AccountView().postRegisterUser(LowkeyApplication.registerModel, new OnSuccessHandler() {
+                        @Override
+                        public void handle(JSONObject response) {
+                            Log.e("Response", response.toString());
+                        }
+                    });
                     return true;
                 case R.id.navigation_dashboard:
                     mTextMessage.setText(R.string.title_dashboard);
