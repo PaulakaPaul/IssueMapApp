@@ -11,8 +11,17 @@ import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Method;
+
+import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.register.RegisterActivity2FL;
+import stargazing.lowkey.main.fragments.MainActivity;
+import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.utils.AttributesValidator;
 
 public class LoginActivity extends AppCompatActivity {
@@ -56,15 +65,44 @@ public class LoginActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                overridePendingTransition(0, 0);
+                final String emailText = email.getText().toString();
+                String passwordText = password.getText().toString();
 
+                if(readyToGo(emailText, passwordText)) {
+                    LoginModel loginModel = new LoginModel(emailText, passwordText);
+                    LowkeyApplication.currentUserManager.postLoginUser(loginModel, new OnSuccessHandler() {
+                        @Override
+                        public void handle(JSONObject response) {
+                            if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                                LowkeyApplication.currentUserManager.setEmail(emailText);
+
+                                overridePendingTransition(0, 0);
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(0, 0);
+                            } else {
+                                Toast.makeText(LoginActivity.this,
+                                        "Could not login.",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
             }
         });
     }
 
     private boolean readyToGo(String email, String password){
-        if(AttributesValidator.isEmailValid(email) && AttributesValidator.isPasswordValid(password))
-            return true;
-        return false;
+        if(!AttributesValidator.isEmailValid(email)) {
+            Toast.makeText(this, "Your email is invalid", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(!AttributesValidator.isPasswordValid(password)) {
+            Toast.makeText(this, "Your password is invalid", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 }

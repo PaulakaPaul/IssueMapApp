@@ -1,5 +1,8 @@
 package stargazing.lowkey.api.views;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -27,17 +30,25 @@ public class UserView extends RequestItecWrapper {
     }
 
     public void getUserByEmail(String email, OnSuccessHandler response) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
+        if (TextUtils.isEmpty(email)) {
+            Map<String, String> queryParams = new HashMap<>();
+            queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
 
-        super.get(USER_BY_EMAIL_RELATIVE_URL, queryParams, null, response);
+            super.get(USER_BY_EMAIL_RELATIVE_URL, queryParams, null, response);
+        } else {
+            Log.e("getUserByEmail", "No email to query with");
+        }
     }
 
     public void getIsAuthorized(String email, OnSuccessHandler response) {
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
+        if (!TextUtils.isEmpty(email)) {
+            Map<String, String> queryParams = new HashMap<>();
+            queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
 
-        super.get(IS_AUTHORIZED_URL, queryParams, null, response);
+            super.get(IS_AUTHORIZED_URL, queryParams, null, response);
+        } else {
+            Log.e("getIsAuthorized", "No email to query with");
+        }
     }
 
     public void postRegisterUser(RegisterModel registerModel, OnSuccessHandler response) {

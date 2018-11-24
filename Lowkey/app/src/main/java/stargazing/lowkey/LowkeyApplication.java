@@ -2,11 +2,14 @@ package stargazing.lowkey;
 
 import android.app.Application;
 
+import org.json.JSONObject;
+
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestQueueSingleton;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.managers.UserManager;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
-import stargazing.lowkey.models.UserModel;
 
 public class LowkeyApplication extends Application {
 
@@ -27,7 +30,38 @@ public class LowkeyApplication extends Application {
         instance = this;
         requestQueue = RequestQueueSingleton.getInstance(this);
 
-        currentUserManager = new UserManager("p.e.iusztin@gmail.com");
+        currentUserManager = getCurrentUserManager();
+    }
+
+    public void isUserLoggedIn(final OnSuccessHandler loggedInHandler) {
+        currentUserManager.IsAuthorized(new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+                if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                    if(UserManager.hasCachedCredentials())
+                        if(loggedInHandler != null)
+                            loggedInHandler.handle(response);
+                    else if(loggedInHandler != null)
+                        loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+            }
+        });
+    }
+
+    public void logout() {
+        if(currentUserManager != null) {
+            currentUserManager.logout();
+        }
+
+        currentUserManager = new UserManager();
+    }
+
+    private UserManager getCurrentUserManager() {
+        if(UserManager.hasCachedCredentials()) {
+            String currentUserEmail = UserManager.getCachedEmail();
+            return new UserManager(currentUserEmail);
+        }
+
+        return new UserManager();
     }
 
 }
