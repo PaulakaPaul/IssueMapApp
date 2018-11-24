@@ -77,7 +77,7 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     private void goToMainIfLoggedIn() {
-        LowkeyApplication.instance.isUserLoggedIn(new OnSuccessHandler() {
+        LowkeyApplication.currentUserManager.isUserLoggedIn(new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
                 if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {

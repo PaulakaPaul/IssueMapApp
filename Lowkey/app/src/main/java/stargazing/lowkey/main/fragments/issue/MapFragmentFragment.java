@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +38,9 @@ import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionLayout;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RFACLabelItem;
 import com.wangjie.rapidfloatingactionbutton.contentimpl.labellist.RapidFloatingActionContentLabelList;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -46,6 +50,11 @@ import java.util.List;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.OnSuccessListHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
+import stargazing.lowkey.managers.IssueManager;
+import stargazing.lowkey.models.IssueGetModel;
 import stargazing.lowkey.models.IssueModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -61,15 +70,17 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     private RapidFloatingActionButton rfaBtn;
     private RapidFloatingActionHelper rfabHelper;
 
-    private ImageView imageview1,imageview2,imageview3,imageview4,imageview5,imageview6;
+    private ImageView imageview1, imageview2, imageview3, imageview4, imageview5, imageview6;
     private Button addphoto;
-    private EditText title,description;
+    private EditText title, description;
     private ConstraintLayout addIssueslayout;
 
     public View result;
     private Uri file;
 
     private ArrayList<IssueModel> issues = new ArrayList<>();
+    ArrayList<IssueGetModel> arrayList = new ArrayList<>();
+    private IssueManager issueManager = new IssueManager();
 
     static MapFragmentFragment newInstance(int position) {
         MapFragmentFragment frag = new MapFragmentFragment();
@@ -127,7 +138,7 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
         issues.add(issueModel1);
         issues.add(issueModel2);
         issues.add(issueModel3);
-        putIssues(mMap, issues);
+        putIssues(mMap);
     }
 
     @Override
@@ -155,7 +166,7 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    private void changeRadius(){
+    private void changeRadius() {
 
     }
 
@@ -230,11 +241,20 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    private void putIssues(GoogleMap gooMap, ArrayList<IssueModel> arrayList) {
-        for (IssueModel i : arrayList) {
-            LatLng location = new LatLng(i.getLatitude(), i.getLongitude());
-            gooMap.addMarker(new MarkerOptions().position(location).title("Issue !!!"));
-        }
+    private void putIssues(final GoogleMap gooMap) {
+        issueManager.getAll(new OnSuccessListHandler() {
+            @Override
+            public void handle(JSONArray response) {
+                if(!response.equals(RequestWrapper.FAIL_JSON_LIST_RESPONSE_VALUE)) {
+                    arrayList = issueManager.getIssues();
+                    for (IssueGetModel g : arrayList) {
+                        LatLng location = new LatLng(g.getLatitude(), g.getLongitude());
+                        gooMap.addMarker(new MarkerOptions().position(location).title("Issue !!!"));
+
+                    }
+                }
+            }
+        });
     }
 
     /***
@@ -397,6 +417,16 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                     LowkeyApplication.currentUserManager.getUserModel().getId(),
                     photoStrings
             );
+            IssueManager issueManager = new IssueManager();
+            issueManager.createIssue(toGo, new OnSuccessHandler() {
+                @Override
+                public void handle(JSONObject response) {
+                    if (!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                        Toast.makeText(getContext().getApplicationContext(), "Issue added to the city map !", Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(getContext().getApplicationContext(), "Something went wrong !", Toast.LENGTH_LONG).show();
+                }
+            });
             return toGo;
         } else {
             return null;

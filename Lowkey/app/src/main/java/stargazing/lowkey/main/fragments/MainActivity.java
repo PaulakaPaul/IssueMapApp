@@ -11,9 +11,13 @@ import android.view.MenuItem;
 
 import com.jaeger.library.StatusBarUtil;
 
+import org.json.JSONArray;
+
+import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
-import stargazing.lowkey.api.views.IssuesView;
+import stargazing.lowkey.api.wrapper.OnSuccessListHandler;
 import stargazing.lowkey.main.fragments.issue.IssuesFragment;
+import stargazing.lowkey.managers.IssueManager;
 
 public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,
@@ -36,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.navigation_home:
                     fm.beginTransaction().hide(active).show(profileFragment).commit();
                     active = profileFragment;
-                    new IssuesView().getAll();
                     return true;
                 case R.id.navigation_dashboard:
                     fm.beginTransaction().hide(active).show(issuesFragment).commit();

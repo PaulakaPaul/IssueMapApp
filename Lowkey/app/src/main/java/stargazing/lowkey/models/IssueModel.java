@@ -19,16 +19,23 @@ public class IssueModel {
                       double latitude,
                       double longitude,
                       UUID createdBy,
-                      ArrayList<String> imagesList){
-
+                      List<String> imagesList){
+        this(title, description, latitude, longitude, createdBy, imagesList);
         this.setId(id);
-        this.setTitle(title);
-        this.setDescription(description);
-        this.setLatitude(latitude);
-        this.setLongitude(longitude);
-        this.setCreatedBy(createdBy);
-        this.setImagesList(imagesList);
+    }
 
+    public IssueModel(String title,
+                      String description,
+                      double latitude,
+                      double longitude,
+                      UUID createdBy,
+                      List<String> imagesList) {
+        Id = UUID.randomUUID();
+        this.Title = title;
+        this.Description = description;
+        this.Latitude = latitude;
+        this.Longitude = longitude;
+        this.CreatedBy = createdBy;
     }
 
     public IssueModel(){}

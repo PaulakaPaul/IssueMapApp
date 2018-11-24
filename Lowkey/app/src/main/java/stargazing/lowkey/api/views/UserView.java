@@ -1,5 +1,6 @@
 package stargazing.lowkey.api.views;
 
+import android.preference.PreferenceActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,7 +31,7 @@ public class UserView extends RequestItecWrapper {
     }
 
     public void getUserByEmail(String email, OnSuccessHandler response) {
-        if (TextUtils.isEmpty(email)) {
+        if (!TextUtils.isEmpty(email)) {
             Map<String, String> queryParams = new HashMap<>();
             queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
 
@@ -40,12 +41,12 @@ public class UserView extends RequestItecWrapper {
         }
     }
 
-    public void getIsAuthorized(String email, OnSuccessHandler response) {
+    public void getIsAuthorized(String email, Map<String, String> header, OnSuccessHandler response) {
         if (!TextUtils.isEmpty(email)) {
             Map<String, String> queryParams = new HashMap<>();
             queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
 
-            super.get(IS_AUTHORIZED_URL, queryParams, null, response);
+            super.get(IS_AUTHORIZED_URL, queryParams, header, null, response);
         } else {
             Log.e("getIsAuthorized", "No email to query with");
         }

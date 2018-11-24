@@ -28,6 +28,7 @@ import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
+import stargazing.lowkey.auth.EntryActivity;
 import stargazing.lowkey.main.fragments.MainActivity;
 import stargazing.lowkey.models.RegisterModel;
 
@@ -201,7 +202,7 @@ public class RegisterActivity4PF extends AppCompatActivity {
                             "Your account was created succesfully",
                             Toast.LENGTH_LONG).show();
 
-                    goToMainActivity();
+                    goToEntryActivity();
                 }
                 else
                     Toast.makeText(RegisterActivity4PF.this,
@@ -211,8 +212,8 @@ public class RegisterActivity4PF extends AppCompatActivity {
         });
     }
 
-    private void goToMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+    private void goToEntryActivity() {
+        Intent intent = new Intent(this, EntryActivity.class);
         startActivity(intent);
     }
 
