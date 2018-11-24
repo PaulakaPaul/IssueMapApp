@@ -30,7 +30,7 @@ public class UserView extends RequestItecWrapper {
     }
 
     public void getUserByEmail(String email, OnSuccessHandler response) {
-        if (!TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(email)) {
             Map<String, String> queryParams = new HashMap<>();
             queryParams.put(EMAIL_QUERY_PARAM_KEY, email);
 
