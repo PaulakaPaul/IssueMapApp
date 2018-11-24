@@ -6,6 +6,9 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import stargazing.lowkey.api.views.UserView;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
@@ -45,9 +48,40 @@ public class UserManager {
         this.userModel = userModel;
     }
 
-    public void IsAuthorized(OnSuccessHandler onSuccessHandler) {
+    public void IsAuthorized(String token, OnSuccessHandler onSuccessHandler) {
+        Map<String, String> header= new HashMap<>();
+        header.put("Authorization", "Bearer " + token);
+
         OnSuccessHandler handleUserModel = getOnSuccessHandlerForUserModelRequest(onSuccessHandler);
-        userView.getIsAuthorized(email, handleUserModel);
+        userView.getIsAuthorized(email, header, handleUserModel);
+    }
+
+    public void isUserLoggedIn(final OnSuccessHandler loggedInHandler) {
+        if(UserManager.hasCachedCredentials()) {
+            this.email = UserManager.getCachedEmail();
+            LoginModel loginModel = UserManager.getChangedLoginModel();
+
+            postLoginUser(loginModel, new OnSuccessHandler() {
+                @Override
+                public void handle(JSONObject response) {
+                       if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                            IsAuthorized(token, new OnSuccessHandler() {
+                                @Override
+                                public void handle(JSONObject response) {
+                                    if(loggedInHandler != null)
+                                        loggedInHandler.handle(response);
+                                }
+                            });
+                       }
+
+                       if(loggedInHandler != null)
+                           loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                }
+            });
+
+        } else if(loggedInHandler != null) {
+            loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+        }
     }
 
     public static boolean hasCachedCredentials() {
@@ -69,7 +103,14 @@ public class UserManager {
         return spUtils.loadString(SHARED_PREF_PASS_KEY);
     }
 
-    public void getUserModel(OnSuccessHandler onSuccessHandler) {
+    public static LoginModel getChangedLoginModel() {
+        if(!hasCachedCredentials())
+            return null;
+
+        return new LoginModel(getCachedEmail(), getCachedPassword());
+    }
+
+    public void requestUserModel(OnSuccessHandler onSuccessHandler) {
         OnSuccessHandler handleUserModel = getOnSuccessHandlerForUserModelRequest(onSuccessHandler);
         userView.getUserByEmail(email, handleUserModel);
     }
@@ -91,18 +132,30 @@ public class UserManager {
         userView.postRegisterUser(registerModel, handleOnRegisterSuccess);
     }
 
-    public void postLoginUser(final LoginModel loginModel, final OnSuccessHandler onSuccessHandler) {
+    public void postLoginUser(final LoginModel loginModel,
+                              final OnSuccessHandler onSuccessHandler) {
+        this.email = loginModel.getEmail();
+
         OnSuccessHandler handleLoginSuccess = new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
-                cacheCredentials(loginModel.getEmail(), loginModel.getPassword());
                 token = getTokenFromResponse(response);
 
-                if (onSuccessHandler != null)
-                    if (token != null)
-                        onSuccessHandler.handle(response);
-                    else
-                        onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                if (onSuccessHandler != null && token != null) {
+                    requestUserModel(new OnSuccessHandler() {
+                        @Override
+                        public void handle(JSONObject response) {
+                            if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                                cacheCredentials(loginModel.getEmail(), loginModel.getPassword());
+                                onSuccessHandler.handle(response);
+                            } else {
+                                onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                            }
+                        }
+                    });
+
+                } else if(onSuccessHandler != null)
+                    onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
             }
         };
 

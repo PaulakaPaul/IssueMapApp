@@ -70,12 +70,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(readyToGo(emailText, passwordText)) {
                     LoginModel loginModel = new LoginModel(emailText, passwordText);
-                    LowkeyApplication.currentUserManager.postLoginUser(loginModel, new OnSuccessHandler() {
+                    LowkeyApplication.currentUserManager.postLoginUser(loginModel,
+                            new OnSuccessHandler() {
                         @Override
                         public void handle(JSONObject response) {
                             if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
-                                LowkeyApplication.currentUserManager.setEmail(emailText);
-
                                 overridePendingTransition(0, 0);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);

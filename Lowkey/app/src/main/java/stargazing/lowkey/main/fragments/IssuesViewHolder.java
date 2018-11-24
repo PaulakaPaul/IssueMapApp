@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.R;
+import stargazing.lowkey.models.IssueModel;
 
 public class IssuesViewHolder extends RecyclerView.ViewHolder {
 

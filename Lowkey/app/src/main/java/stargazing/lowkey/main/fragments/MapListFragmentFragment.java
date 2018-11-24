@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import stargazing.lowkey.R;
+import stargazing.lowkey.models.IssueModel;
 
 public class MapListFragmentFragment extends Fragment {
 
