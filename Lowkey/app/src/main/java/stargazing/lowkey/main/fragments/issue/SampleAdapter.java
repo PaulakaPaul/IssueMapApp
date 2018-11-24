@@ -28,6 +28,10 @@ public class SampleAdapter extends FragmentPagerAdapter {
         else
             return(MapListFragmentFragment.newInstance(position));
     }
+    public MapListFragmentFragment GetCurrentMapList()
+    {
+        return null;
+    }
 
     @Override
     public String getPageTitle(int position) {

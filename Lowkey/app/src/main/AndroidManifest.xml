@@ -25,14 +25,15 @@
         <activity
             android:name=".main.fragments.MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".auth.EntryActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.EntryActivity" />
         <activity android:name=".auth.register.RegisterActivity1EP" />
         <activity android:name=".auth.register.RegisterActivity2FL" />
         <activity android:name=".auth.register.RegisterActivity3AG" />

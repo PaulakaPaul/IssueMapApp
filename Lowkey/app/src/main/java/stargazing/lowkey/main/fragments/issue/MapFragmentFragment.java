@@ -1,10 +1,12 @@
 package stargazing.lowkey.main.fragments.issue;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,23 +16,27 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionButton;
 import com.wangjie.rapidfloatingactionbutton.RapidFloatingActionHelper;
@@ -47,6 +53,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
@@ -56,9 +64,11 @@ import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.managers.IssueManager;
 import stargazing.lowkey.models.IssueGetModel;
 import stargazing.lowkey.models.IssueModel;
+import stargazing.lowkey.serializers.IssueSerializer;
 
 import static android.app.Activity.RESULT_OK;
 import static java.util.UUID.randomUUID;
+import static stargazing.lowkey.auth.register.RegisterActivity2FL.REQUEST_LOCATION;
 
 public class MapFragmentFragment extends Fragment implements OnMapReadyCallback, RapidFloatingActionContentLabelList.OnRapidFloatingActionContentLabelListListener {
 
@@ -75,9 +85,15 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     private EditText title, description;
     private ConstraintLayout addIssueslayout;
 
+    ConstraintLayout cc;
+    private TextView title1,description1,up,down;
+
+    private double currentLat;
+    private double currentLong;
+    private View viewToExpand;
     public View result;
     private Uri file;
-
+    FusedLocationProviderClient mfusedlocation;
     private ArrayList<IssueModel> issues = new ArrayList<>();
     ArrayList<IssueGetModel> arrayList = new ArrayList<>();
     private IssueManager issueManager = new IssueManager();
@@ -99,10 +115,15 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
         result = inflater.inflate(R.layout.fragment_fragment_map, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        viewToExpand = result.findViewById(R.id.view);
+        collapse(viewToExpand,200,1);
         addIssueslayout = result.findViewById(R.id.addIssue);
         addIssueslayout.setVisibility(View.INVISIBLE);
-
+        cc = result.findViewById(R.id.cc);
+        title1 = result.findViewById(R.id.title);
+        description1 = result.findViewById(R.id.description);
+        up = result.findViewById(R.id.up);
+        down = result.findViewById(R.id.down);
         rfaLayout = result.findViewById(R.id.activity_main_rfal);
         rfaBtn = result.findViewById(R.id.activity_main_rfab);
 
@@ -115,30 +136,65 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        // Add a marker in Sydney and move the camera
-        // double lat = LowkeyApplication.currentUserManager.getUserModel().getDoubleLat();
-        // double lon = LowkeyApplication.currentUserManager.getUserModel().getDoubleLon();
-        // int radius = LowkeyApplication.currentUserManager.getUserModel().getRadius();
-        double lat = 45.75372f;
-        double lon = 21.22571f;
-        int radius = 13;
-        LatLng currentLocation = new LatLng(lat, lon);
-        mMap.addMarker(new MarkerOptions().position(currentLocation).title("You"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
-        zoomMap(mMap, lat, lon, radius);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                String locAddress = marker.getTitle();
+                Log.w("c","clicked");
+                expand(viewToExpand,1500,450);
+                ConstraintLayout cc = result.findViewById(R.id.cc);
 
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("dasda");
-        IssueModel issueModel = new IssueModel(randomUUID(), "fafas", "fasfasfa", 45.65372f, 21.13571f, randomUUID(), list);
-        IssueModel issueModel1 = new IssueModel(randomUUID(), "fafas", "fasfasfa", 45.65472f, 21.14571f, randomUUID(), list);
-        IssueModel issueModel2 = new IssueModel(randomUUID(), "fafas", "fasfasfa", 45.62572f, 21.15571f, randomUUID(), list);
-        IssueModel issueModel3 = new IssueModel(randomUUID(), "fafas", "fasfasfa", 45.67372f, 21.16571f, randomUUID(), list);
+                IssueGetModel issueGetModel = new IssueSerializer((String)marker.getTag()).getIssueGetModel();
 
-        issues.add(issueModel);
-        issues.add(issueModel1);
-        issues.add(issueModel2);
-        issues.add(issueModel3);
+
+                try {
+                    title1.setText(issueGetModel.getTitle());
+                    description1.setText(issueGetModel.getDescription());
+                    //up.setText(issueGetModel.getUpVotes());
+                    //down.setText(issueGetModel.getDownVotes());
+                } catch (NullPointerException npe){
+
+                }
+
+                cc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        collapse(viewToExpand,1000,1);
+                    }
+                });
+                return true;
+            }
+        });
+        //LatLng currentLocation = new LatLng(lat, lon);
+        //mMap.addMarker(new MarkerOptions().position(currentLocation).title("You"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+        //zoomMap(mMap, lat, lon, radius);
+        putUserOnTheMap();
         putIssues(mMap);
+    }
+
+    private void putUserOnTheMap(){
+        mfusedlocation = LocationServices.getFusedLocationProviderClient(getContext());
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            mfusedlocation.getLastLocation()
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                Log.e("LOCATION","X:"+ String.valueOf(location.getLatitude()) + "Y :" + String.valueOf(location.getLongitude()));
+                                LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                                mMap.addMarker(new MarkerOptions().position(currentLocation).title("You"));
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                                zoomMap(mMap,location.getLatitude(),location.getLongitude(),13);
+                                currentLat = location.getLatitude();
+                                currentLong = location.getLongitude();
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
@@ -249,7 +305,11 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                     arrayList = issueManager.getIssues();
                     for (IssueGetModel g : arrayList) {
                         LatLng location = new LatLng(g.getLatitude(), g.getLongitude());
-                        gooMap.addMarker(new MarkerOptions().position(location).title("Issue !!!"));
+                        String s = g.getTitle() + "\n" + g.getDescription() + "\n" + "Posted by : " + g.getCreator();
+                        Marker amarker = gooMap.addMarker(new MarkerOptions().position(location).title(s));
+                        IssueSerializer issueSerializer = new IssueSerializer(g);
+                        amarker.setTag(issueSerializer.getIssueStringSerialized());
+
 
                     }
                 }
@@ -412,8 +472,8 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                     randomUUID(),
                     title.getText().toString(),
                     description.getText().toString(),
-                    LowkeyApplication.currentUserManager.getUserModel().getDoubleLat(),
-                    LowkeyApplication.currentUserManager.getUserModel().getDoubleLon(),
+                    currentLat,
+                    currentLong,
                     LowkeyApplication.currentUserManager.getUserModel().getId(),
                     photoStrings
             );
@@ -431,6 +491,39 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
         } else {
             return null;
         }
+    }
+
+    public static void expand(final View v, int duration, int targetHeight) {
+
+        int prevHeight = v.getHeight();
+        v.setVisibility(View.VISIBLE);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
+    }
+
+    public static void collapse(final View v, int duration, int targetHeight) {
+        int prevHeight = v.getHeight();
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
     }
 
 
