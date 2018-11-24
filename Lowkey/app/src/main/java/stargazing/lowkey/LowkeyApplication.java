@@ -11,6 +11,7 @@ import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestQueueSingleton;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.managers.UserManager;
+import stargazing.lowkey.models.CommentModel;
 import stargazing.lowkey.models.IssueModel;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
@@ -31,6 +32,10 @@ public class LowkeyApplication extends Application {
             "Issue Test Updated By Stargazing", "This is the description for issue test", 45.748871, 21.208679,
             UUID.fromString("adebef04-b1ee-462c-9da2-01182652e45d"),
             new ArrayList<String>());
+
+    public static CommentModel commentModel = new CommentModel(UUID.fromString("36b1e8d2-1835-480f-9cb3-612ba56dfcf2"),
+            UUID.fromString("3605886a-93f9-4702-a381-10f0860bcb85"),
+            "Content from stargazing edited", UUID.fromString("219c01f9-d6a8-4412-99d8-5e286866dcb4"));
 
     @Override
     public void onCreate() {

@@ -35,7 +35,7 @@ public class IssueManager {
         issuesView.getAll(populateIssuesHandler);
     }
 
-    public void createIssue(IssueModel issueModel, OnSuccessHandler onSuccessHandler) {
+    public void createIssue(IssueModel issueModel, final OnSuccessHandler onSuccessHandler) {
         IssueSerializer issueSerializer = new IssueSerializer(issueModel);
         JSONObject body = issueSerializer.getIssuesSerialized();
 
