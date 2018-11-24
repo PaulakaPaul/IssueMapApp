@@ -45,6 +45,7 @@ public class LowkeyApplication extends Application {
         requestQueue = RequestQueueSingleton.getInstance(this);
 
         currentUserManager = getCurrentUserManager();
+        logout();
     }
 
     public void logout() {
