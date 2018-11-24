@@ -1,5 +1,6 @@
 package stargazing.lowkey.models;
 
+import java.util.List;
 import java.util.UUID;
 
 public class UserModel {
@@ -12,8 +13,9 @@ public class UserModel {
     private int Age;
     private int Gender;
     private String ProfilePicture;
+    private List<IssueModel> Issues;
 
-    public UserModel(UUID id, String aspNetUserId, String fullName, String latitude, String longitude, int radius, int age, int gender, String profilePicture) {
+    public UserModel(UUID id, String aspNetUserId, String fullName, String latitude, String longitude, int radius, int age, int gender, String profilePicture, List<IssueModel> issues) {
         Id = id;
         AspNetUserId = aspNetUserId;
         FullName = fullName;
@@ -23,6 +25,7 @@ public class UserModel {
         Age = age;
         Gender = gender;
         ProfilePicture = profilePicture;
+        Issues = issues;
     }
 
     public UUID getId() {
@@ -103,5 +106,13 @@ public class UserModel {
 
     public double getDoubleLon(){
         return Double.valueOf(this.getLongitude());
+    }
+
+    public List<IssueModel> getIssues() {
+        return Issues;
+    }
+
+    public void setIssues(List<IssueModel> issues) {
+        Issues = issues;
     }
 }
