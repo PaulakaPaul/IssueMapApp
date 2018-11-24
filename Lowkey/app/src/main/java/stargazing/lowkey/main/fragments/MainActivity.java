@@ -24,6 +24,7 @@ import stargazing.lowkey.api.wrapper.OnSuccessListHandler;
 import stargazing.lowkey.main.fragments.issue.IssuesFragment;
 import stargazing.lowkey.managers.CommentManager;
 import stargazing.lowkey.managers.IssueManager;
+import stargazing.lowkey.managers.StatisticsManager;
 import stargazing.lowkey.managers.UserManager;
 import stargazing.lowkey.models.IssueGetModel;
 
@@ -48,12 +49,6 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.navigation_home:
                     fm.beginTransaction().hide(active).show(profileFragment).commit();
                     active = profileFragment;
-                    new IssueManager().createIssue(LowkeyApplication.issueModel, new OnSuccessHandler() {
-                        @Override
-                        public void handle(JSONObject response) {
-                            int a = 2;
-                        }
-                    });
                     return true;
                 case R.id.navigation_dashboard:
                     fm.beginTransaction().hide(active).show(issuesFragment).commit();

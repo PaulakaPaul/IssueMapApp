@@ -28,12 +28,12 @@ public class LowkeyApplication extends Application {
 
     public static LoginModel loginModel = new LoginModel("p.e.iusztin@gmail.com", "ceaispus");
 
-    public static IssueModel issueModel = new IssueModel(
-            "Issue Test Updated By Stargazing", "This is the description for issue test", 45.748871, 21.208679,
+    public static IssueModel issueModel = new IssueModel(UUID.fromString("dd063084-7ec1-4bc9-be87-02cb99835d3d"),
+            "Issue Test Updated By Stargazing 222", "This is the description for issue test", 45.748871, 21.208679,
             UUID.fromString("adebef04-b1ee-462c-9da2-01182652e45d"),
             new ArrayList<String>());
 
-    public static CommentModel commentModel = new CommentModel(UUID.fromString("36b1e8d2-1835-480f-9cb3-612ba56dfcf2"),
+    public static CommentModel commentModel = new CommentModel(
             UUID.fromString("3605886a-93f9-4702-a381-10f0860bcb85"),
             "Content from stargazing edited", UUID.fromString("219c01f9-d6a8-4412-99d8-5e286866dcb4"));
 
