@@ -75,7 +75,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
         ArrayAdapter<CharSequence> spinnerAdapter1 = ArrayAdapter.
                 createFromResource(this, R.array.radius, android.R.layout.simple_spinner_item);
         spinnerAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRadius.setAdapter(spinnerAdapter);
+        spinnerRadius.setAdapter(spinnerAdapter1);
 
 
     }
@@ -112,7 +112,7 @@ public class RegisterActivity3AG extends AppCompatActivity {
 
     private boolean readyToGo(){
         if(dpBirth.getYear() > 2004) {
-            Toast.makeText(getApplicationContext(),"You are too young bro",Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(),"You are too young bro",Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

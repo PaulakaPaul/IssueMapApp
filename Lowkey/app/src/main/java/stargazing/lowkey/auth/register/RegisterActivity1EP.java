@@ -63,7 +63,7 @@ public class RegisterActivity1EP extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                 }else
-                    Toast.makeText(getApplicationContext(), ERROR_BAD_EMAIL, ERROR_BAD_EMAIL.length());
+                    Toast.makeText(getApplicationContext(), ERROR_BAD_EMAIL, ERROR_BAD_EMAIL.length()).show();
             }
         });
     }

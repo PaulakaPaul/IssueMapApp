@@ -3,7 +3,10 @@ package stargazing.lowkey.main.fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +30,7 @@ public class IssuesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private View rootView;
     private OnFragmentInteractionListener mListener;
 
     public IssuesFragment() {
@@ -61,11 +64,24 @@ public class IssuesFragment extends Fragment {
         }
     }
 
+    private PagerAdapter buildAdapter() {
+        return(new SampleAdapter(getActivity(),getChildFragmentManager()));
+    }
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_issues, container, false);
+        rootView = inflater.inflate(R.layout.fragment_issues, container, false);
+        ViewPager pager=(ViewPager)rootView.findViewById(R.id.pager);
+        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tabDots);
+
+        pager.setAdapter(buildAdapter());
+        tabLayout.setupWithViewPager(pager, true);
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

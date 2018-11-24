@@ -38,7 +38,7 @@ public class RegisterActivity2FL extends AppCompatActivity {
     private String email;
     private String password;
 
-    private static String ERROR_BAD_EMAIL = "Email or password is not valid !";
+    private static String ERROR_BAD_EMAIL = "Username not valid ! ";
 
     private boolean LOCATION_STATE;
 
@@ -92,7 +92,7 @@ public class RegisterActivity2FL extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                 } else
-                    Toast.makeText(getApplicationContext(), ERROR_BAD_EMAIL, ERROR_BAD_EMAIL.length());
+                    Toast.makeText(getApplicationContext(), ERROR_BAD_EMAIL, ERROR_BAD_EMAIL.length()).show();
             }
         });
     }
