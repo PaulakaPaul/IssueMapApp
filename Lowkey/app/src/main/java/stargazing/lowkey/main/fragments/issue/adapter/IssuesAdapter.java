@@ -53,7 +53,7 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final IssuesViewHolder holderToBind = (IssuesViewHolder) holder;
             holderToBind.bindUI(issueDto);
             holderToBind.bind(holderToBind,listener);
-            holderToBind.bindDelete(holderToBind,del);
+            //holderToBind.bindDelete(holderToBind,del);
 
     }
 

@@ -12,6 +12,7 @@ import stargazing.lowkey.api.wrapper.RequestQueueSingleton;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.managers.UserManager;
 import stargazing.lowkey.models.CommentModel;
+import stargazing.lowkey.models.IssueGetModel;
 import stargazing.lowkey.models.IssueModel;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
@@ -20,6 +21,9 @@ public class LowkeyApplication extends Application {
 
     public static LowkeyApplication instance;
     public static RequestQueueSingleton requestQueue;
+
+    public static ArrayList<IssueGetModel> staticIssues;
+
 
     public static UserManager currentUserManager;
 

@@ -1,0 +1,68 @@
+<android.support.constraint.ConstraintLayout android:id="@+id/contentRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient1"
+    android:elevation="@dimen/cardview_default_elevation"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvComments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llAddComment"
+        android:layout_marginBottom="55dp"
+        android:layout_weight="1"
+        android:scrollbars="none"
+        app:layout_anchor="@+id/llAddComment"
+        tools:listitem="@layout/comment_item">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/llAddComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/roundedlayout"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="25dp"
+        android:minHeight="48dp"
+
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <EditText
+            android:id="@+id/chat_input_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Type a message"
+            android:maxLines="6" />
+
+        <Button
+            android:id="@+id/sendComment"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clickable="true"
+            android:gravity="center"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:text="SEND"
+            android:textSize="14dp" />
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

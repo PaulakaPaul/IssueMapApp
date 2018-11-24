@@ -69,7 +69,7 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
                 listener.onItemClick(item,v);
             }
         });
-    }
+    }/*
     public void bindDelete(final IssuesViewHolder item, final IssuesAdapter.OnDeleteItem listener){
         title.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +77,7 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
                 listener.deleteItem(item,view);
             }
         });
-    }
+    }*/
     private String localTime(Long time) {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = cal.getTimeZone();

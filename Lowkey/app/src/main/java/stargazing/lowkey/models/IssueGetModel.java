@@ -1,6 +1,7 @@
 package stargazing.lowkey.models;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class IssueGetModel {
@@ -126,5 +127,19 @@ public class IssueGetModel {
 
     public void setImages(List<String> images) {
         Images = images;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IssueGetModel that = (IssueGetModel) o;
+
+        return this.Id.equals(that.Id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Id.hashCode() * 2 + 5;
     }
 }
