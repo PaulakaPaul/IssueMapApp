@@ -1,4 +1,4 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

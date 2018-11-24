@@ -1,4 +1,4 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import stargazing.lowkey.R;
+import stargazing.lowkey.models.IssueModel;
 
 public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

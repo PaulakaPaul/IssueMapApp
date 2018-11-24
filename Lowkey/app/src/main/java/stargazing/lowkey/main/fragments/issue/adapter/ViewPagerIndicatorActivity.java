@@ -1,7 +1,9 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue.adapter;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+
+import stargazing.lowkey.main.fragments.issue.IssuesFragment;
 
 public class ViewPagerIndicatorActivity extends FragmentActivity {
     @Override

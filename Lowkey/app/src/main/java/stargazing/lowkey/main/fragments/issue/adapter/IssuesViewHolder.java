@@ -1,4 +1,4 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.R;
+import stargazing.lowkey.models.IssueModel;
 
 public class IssuesViewHolder extends RecyclerView.ViewHolder {
 

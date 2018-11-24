@@ -1,9 +1,12 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import stargazing.lowkey.main.fragments.issue.MapFragmentFragment;
+import stargazing.lowkey.main.fragments.issue.MapListFragmentFragment;
 
 public class SampleAdapter extends FragmentPagerAdapter {
     Context ctxt=null;

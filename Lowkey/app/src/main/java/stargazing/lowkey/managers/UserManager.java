@@ -179,6 +179,8 @@ public class UserManager {
         return token;
     }
 
+    public UserModel getUserModel() {return this.userModel;}
+
     public void setEmail(String email) {
         this.email = email;
     }

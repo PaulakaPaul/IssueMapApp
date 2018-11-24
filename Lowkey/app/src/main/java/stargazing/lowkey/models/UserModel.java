@@ -96,4 +96,12 @@ public class UserModel {
     public void setProfilePicture(String profilePicture) {
         ProfilePicture = profilePicture;
     }
+
+    public double getDoubleLat(){
+        return Double.valueOf(this.getLatitude());
+    }
+
+    public double getDoubleLon(){
+        return Double.valueOf(this.getLongitude());
+    }
 }

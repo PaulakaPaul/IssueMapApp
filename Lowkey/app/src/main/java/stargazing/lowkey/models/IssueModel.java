@@ -1,5 +1,6 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.models;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public class IssueModel {
     private double Latitude;
     private double Longitude;
     private UUID CreatedBy;
-    private List<String> ImagesList;
+    private ArrayList<String> ImagesList;
 
     public IssueModel(UUID id,
                       String title,
@@ -18,7 +19,7 @@ public class IssueModel {
                       double latitude,
                       double longitude,
                       UUID createdBy,
-                      List<String> imagesList){
+                      ArrayList<String> imagesList){
 
         this.setId(id);
         this.setTitle(title);
@@ -80,11 +81,11 @@ public class IssueModel {
         CreatedBy = createdBy;
     }
 
-    public List<String> getImagesList() {
+    public ArrayList<String> getImagesList() {
         return ImagesList;
     }
 
-    public void setImagesList(List<String> imagesList) {
+    public void setImagesList(ArrayList<String> imagesList) {
         ImagesList = imagesList;
     }
 }

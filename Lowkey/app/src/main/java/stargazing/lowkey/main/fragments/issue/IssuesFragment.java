@@ -1,4 +1,4 @@
-package stargazing.lowkey.main.fragments;
+package stargazing.lowkey.main.fragments.issue;
 
 import android.content.Context;
 import android.net.Uri;

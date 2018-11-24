@@ -13,6 +13,7 @@ import com.jaeger.library.StatusBarUtil;
 
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.views.IssuesView;
+import stargazing.lowkey.main.fragments.issue.IssuesFragment;
 
 public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,
