@@ -86,7 +86,9 @@ public class ComentsActivity extends AppCompatActivity {
         }catch (ArrayIndexOutOfBoundsException aiobe){
             Log.e("No comments","nu is bossu");
             commentArrayList = new ArrayList<>();
-
+        }catch(IndexOutOfBoundsException iofbe){
+            Log.e("No comments","nu is bossu");
+            commentArrayList = new ArrayList<>();
         }
 
         drawingStartLocation = getIntent().getIntExtra(ARG_DRAWING_START_LOCATION, 0);

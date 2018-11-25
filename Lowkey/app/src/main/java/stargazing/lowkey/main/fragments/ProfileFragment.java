@@ -96,6 +96,8 @@ public class ProfileFragment extends Fragment {
         TextView username = rootView.findViewById(R.id.username);
         TextView UID = rootView.findViewById(R.id.textView15);
 
+
+
         Button button = rootView.findViewById(R.id.next7);
         Button log_out = rootView.findViewById(R.id.next6);
         if(getActivity().getIntent().getStringExtra("Status")!=null)
@@ -103,6 +105,18 @@ public class ProfileFragment extends Fragment {
             username.setText("You are offline");
             button.setVisibility(View.INVISIBLE);
             UID.setText("Log in to have a full application experience !");
+        }else {
+            username.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
+            UID.setText(LowkeyApplication.currentUserManager.getUserModel().getId().toString());
+            final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+            photoUploader.download(LowkeyApplication.currentUserManager.getUserModel().getProfilePicture(),
+                    new Callback() {
+                        @Override
+                        public void handle() {
+                            profilePhoto = photoUploader.getPhoto();
+                        }
+                    }, null);
+
         }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,15 +135,6 @@ public class ProfileFragment extends Fragment {
                 getActivity().overridePendingTransition(0, 0);
             }
         });
-
-        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-        photoUploader.download(LowkeyApplication.currentUserManager.getUserModel().getProfilePicture(),
-                new Callback() {
-                    @Override
-                    public void handle() {
-                        profilePhoto = photoUploader.getPhoto();
-                    }
-                }, null);
 
         return rootView;
     }
