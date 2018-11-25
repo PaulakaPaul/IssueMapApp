@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import stargazing.lowkey.api.photos.PhotoNameTranslator;
 import stargazing.lowkey.api.views.UserView;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
@@ -264,6 +265,10 @@ public class UserManager {
 
     public UserModel getUserModel() {
         return this.userModel;
+    }
+
+    public String getProfilePictureName() {
+        return PhotoNameTranslator.getPhotoNameFromEmail(email);
     }
 
     public void setEmail(String email) {
