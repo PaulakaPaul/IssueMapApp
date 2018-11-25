@@ -26,7 +26,6 @@
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/cc"
-                android:background="@drawable/gradient2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -45,9 +44,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:textSize="30dp"
-                    android:text="NOT DISPLAYED"
-                    android:textColor="@android:color/white"
+                    android:textColor="@android:color/black"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/view" />
@@ -58,10 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
-                    android:textColor="@android:color/darker_gray"
                     android:layout_marginTop="8dp"
-                    android:textSize="20dp"
-                    android:text="ALSO NOT DISPLAYED"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/title" />
 
@@ -72,7 +66,6 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:textColor="@android:color/holo_green_light"
                     android:text="0 UPS"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/description" />
@@ -83,7 +76,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="16dp"
-                    android:textColor="@android:color/holo_red_light"
                     android:layout_marginTop="8dp"
                     android:text="0 DOWN"
                     app:layout_constraintStart_toEndOf="@+id/up"
@@ -118,10 +110,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <Button
+                    android:id="@+id/cancelButton"
+                    android:layout_width="34dp"
+                    android:layout_height="44dp"
+                    android:layout_margin="2dp"
+                    android:background="@color/orangeDark"
+                    android:text="X"
+                    tools:layout_editor_absoluteX="16dp"
+                    tools:layout_editor_absoluteY="16dp" />
+
                 <ImageView
                     android:id="@+id/imageView4"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -130,10 +133,11 @@
 
                 <ImageView
                     android:id="@+id/imageView5"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     app:layout_constraintEnd_toStartOf="@+id/imageView4"
@@ -143,19 +147,20 @@
 
                 <ImageView
                     android:id="@+id/imageView6"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
                     android:layout_marginLeft="32dp"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView3"
                     app:srcCompat="@drawable/photoadd" />
 
                 <ImageView
                     android:id="@+id/imageView7"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginRight="32dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -164,9 +169,13 @@
 
                 <ImageView
                     android:id="@+id/imageView8"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     app:layout_constraintEnd_toStartOf="@+id/imageView7"
                     app:layout_constraintStart_toEndOf="@+id/imageView3"
                     app:layout_constraintTop_toBottomOf="@+id/editText3"
@@ -246,12 +255,14 @@
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editText3"
-                    app:srcCompat="@drawable/photoadd"
-                    tools:layout_editor_absoluteX="32dp" />
+                    app:srcCompat="@drawable/photoadd" />
             </android.support.constraint.ConstraintLayout>
         </android.support.v7.widget.CardView>
     </android.support.constraint.ConstraintLayout>

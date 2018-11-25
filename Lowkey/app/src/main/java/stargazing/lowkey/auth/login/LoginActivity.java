@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void handle(JSONObject response) {
                             if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                                LowkeyApplication.isAnnonymous = false;
                                 overridePendingTransition(0, 0);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 intent.putExtra("Status","online");

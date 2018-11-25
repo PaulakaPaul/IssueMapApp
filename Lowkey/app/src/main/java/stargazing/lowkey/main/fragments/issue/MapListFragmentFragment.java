@@ -58,8 +58,8 @@ public class MapListFragmentFragment extends Fragment {
         //mainCallback.DoSomething();
         floatingActionButton = result.findViewById(R.id.floatingActionButton);
 
-        if(getActivity().getIntent().getStringExtra("Status")!=null)
-            if(getActivity().getIntent().getStringExtra("Status").equals("offline"))
+
+        if(LowkeyApplication.isAnnonymous)
             Toast.makeText(getContext(),"You are offline", Toast.LENGTH_SHORT).show();
             else {
                 floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -132,12 +132,8 @@ public class MapListFragmentFragment extends Fragment {
                                 }}
                             if(!found)
                                 intent.putExtra("index", -1);
-                            if(getActivity().getIntent().getStringExtra("Status")!=null)
-                                if(getActivity().getIntent().getStringExtra("Status").equals("offline"))
-                                    intent.putExtra("Status","offline");
-                            else
-                                     intent.putExtra("Status","online");
-                                getActivity().overridePendingTransition(0, 0);
+
+                            getActivity().overridePendingTransition(0, 0);
                             startActivity(intent);
                             getActivity().overridePendingTransition(0, 0);
 
@@ -147,34 +143,43 @@ public class MapListFragmentFragment extends Fragment {
                     adapter.setDislike(new IssuesAdapter.OnRedClick() {
                         @Override
                         public void onItemClick(IssuesViewHolder item, View v) {
-                            final int position = item.getAdapterPosition();
-                            final IssueGetModel m = adapter.getMsg(position);
-                            issueManager.voteDown(m.getId(), new OnSuccessHandler() {
-                                @Override
-                                public void handle(JSONObject response) {
-                                    if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
-                                        Log.e("Error dislike: ","mh");
-                                    m.setDownVotes(m.getDownVotes()+1);
-                                    adapter.notifyItemChanged(position);
-                                }
-                            });
+                            if(!LowkeyApplication.isAnnonymous) {
+                                final int position = item.getAdapterPosition();
+                                final IssueGetModel m = adapter.getMsg(position);
+                                issueManager.voteDown(m.getId(), new OnSuccessHandler() {
+                                    @Override
+                                    public void handle(JSONObject response) {
+                                        if (response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                                            Log.e("Error dislike: ", "mh");
+                                        m.setDownVotes(m.getDownVotes() + 1);
+                                        adapter.notifyItemChanged(position);
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(LowkeyApplication.instance.getBaseContext(),
+                                        "Register to vote!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     adapter.setLike(new IssuesAdapter.OnGreenClick() {
                         @Override
                         public void onItemClick(IssuesViewHolder item, View v) {
-                            final int position = item.getAdapterPosition();
-                            final IssueGetModel m = adapter.getMsg(position);
-                            issueManager.voteUp(m.getId(), new OnSuccessHandler() {
-                                @Override
-                                public void handle(JSONObject response) {
-                                    if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
-                                        Log.e("Error like : ","mh");
-                                    m.setUpVotes(m.getUpVotes()+1);
-                                    adapter.notifyItemChanged(position);
-                                }
-                            });
-
+                            if(!LowkeyApplication.isAnnonymous) {
+                                final int position = item.getAdapterPosition();
+                                final IssueGetModel m = adapter.getMsg(position);
+                                issueManager.voteUp(m.getId(), new OnSuccessHandler() {
+                                    @Override
+                                    public void handle(JSONObject response) {
+                                        if (response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                                            Log.e("Error like : ", "mh");
+                                        m.setUpVotes(m.getUpVotes() + 1);
+                                        adapter.notifyItemChanged(position);
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(LowkeyApplication.instance.getBaseContext(),
+                                        "Register to vote!", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     rvContacts.setAdapter(adapter);

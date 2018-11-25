@@ -72,10 +72,11 @@ public class ComentsActivity extends AppCompatActivity {
         rvComments = findViewById(R.id.rvComments);
         llAddComment = findViewById(R.id.llAddComment);
         button = findViewById(R.id.sendComment);
-        if(getIntent().getStringExtra("Status")!=null)
-            if(getIntent().getStringExtra("Status").equals("offline"))
+
+        if(LowkeyApplication.isAnnonymous)
             button.setVisibility(View.INVISIBLE);
-            StatusBarUtil.setTransparent(this);
+
+        StatusBarUtil.setTransparent(this);
         index = getIntent().getIntExtra("index", 0);
         inputTxt = findViewById(R.id.chat_input_msg);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -211,6 +212,8 @@ public class ComentsActivity extends AppCompatActivity {
             rvComments.scrollToPosition(newMsgPosition);
         } catch (NullPointerException e) {
             Log.e("Error", "parcelable object failed");
+        } catch (Exception e) {
+
         }
     }
 

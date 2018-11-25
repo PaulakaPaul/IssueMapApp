@@ -20,7 +20,6 @@ import stargazing.lowkey.main.fragments.issue.adapter.IssuesAdapter;
 import stargazing.lowkey.main.fragments.issue.adapter.IssuesViewHolder;
 import stargazing.lowkey.managers.IssueManager;
 import stargazing.lowkey.models.IssueGetModel;
-import stargazing.lowkey.models.IssueModel;
 
 public class ManageIssuesActivity extends AppCompatActivity {
 

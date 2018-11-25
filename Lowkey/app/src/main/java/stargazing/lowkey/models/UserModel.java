@@ -93,14 +93,6 @@ public class UserModel {
         Gender = gender;
     }
 
-    public String getProfilePicture() {
-        return ProfilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        ProfilePicture = profilePicture;
-    }
-
     public double getDoubleLat(){
         return Double.valueOf(this.getLatitude());
     }

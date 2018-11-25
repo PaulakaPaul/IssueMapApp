@@ -8,16 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
 
-import org.json.JSONObject;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
-import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.main.fragments.issue.IssuesFragment;
-import stargazing.lowkey.managers.UserManager;
 
 public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,
@@ -32,15 +30,18 @@ public class MainActivity extends AppCompatActivity implements
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    fm.beginTransaction().hide(active).show(profileFragment).commit();
-                    active = profileFragment;
-                    return true;
+                    if(!LowkeyApplication.isAnnonymous) {
+                        fm.beginTransaction().hide(active).show(profileFragment).commit();
+                        active = profileFragment;
+                        return true;
+                    }
+
+                    Toast.makeText(MainActivity.this, "Please register to have full access", Toast.LENGTH_SHORT).show();
+                    return false;
                 case R.id.navigation_dashboard:
                     fm.beginTransaction().hide(active).show(issuesFragment).commit();
                     active = issuesFragment;
@@ -64,11 +65,13 @@ public class MainActivity extends AppCompatActivity implements
         fm.beginTransaction().add(R.id.main_container, profileFragment, "1").commit();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        navigation.setSelectedItemId(R.id.navigation_dashboard);
     }
 
     @Override
     public void onBackPressed() {
-
+        if(LowkeyApplication.isAnnonymous)
+            super.onBackPressed();
     }
 
     @Override

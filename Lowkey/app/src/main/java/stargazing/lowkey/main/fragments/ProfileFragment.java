@@ -1,5 +1,6 @@
 package stargazing.lowkey.main.fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,8 +8,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +22,18 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.photos.Callback;
 import stargazing.lowkey.api.photos.PhotoUploader;
+import stargazing.lowkey.api.photos.PhotoUtils;
 import stargazing.lowkey.api.photos.ProfilePhotoUploader;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.EntryActivity;
-import stargazing.lowkey.auth.register.RegisterActivity4PF;
 import stargazing.lowkey.managers.UserManager;
 import stargazing.lowkey.models.UpdateUserModel;
 
@@ -41,6 +46,7 @@ import stargazing.lowkey.models.UpdateUserModel;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+    private final int GALLERY_REQUEST = 1;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +59,8 @@ public class ProfileFragment extends Fragment {
 
     private Bitmap profilePhoto;
 
-    View rootView;
+    private View rootView;
+    private CircleImageView profileImageView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -93,31 +100,47 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+
         TextView username = rootView.findViewById(R.id.username);
         TextView UID = rootView.findViewById(R.id.textView15);
+
+        if(!LowkeyApplication.isAnnonymous) {
+            UID.setText(LowkeyApplication.currentUserManager.getUserModel().getId().toString());
+            username.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
+        }
+
+        profileImageView = rootView.findViewById(R.id.profile);
+        profileImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                askForImage();
+            }
+        });
 
 
 
         Button button = rootView.findViewById(R.id.next7);
         Button log_out = rootView.findViewById(R.id.next6);
-        if(getActivity().getIntent().getStringExtra("Status")!=null)
-        if(getActivity().getIntent().getStringExtra("Status").equals("offline")) {
+
+        if(LowkeyApplication.isAnnonymous) {
             username.setText("You are offline");
             button.setVisibility(View.INVISIBLE);
             UID.setText("Log in to have a full application experience !");
-        }else {
+        } else {
             username.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
             UID.setText(LowkeyApplication.currentUserManager.getUserModel().getId().toString());
             final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
-            photoUploader.download(LowkeyApplication.currentUserManager.getUserModel().getProfilePicture(),
+            photoUploader.download(LowkeyApplication.currentUserManager.getProfilePictureName(),
                     new Callback() {
                         @Override
                         public void handle() {
                             profilePhoto = photoUploader.getPhoto();
+                            profileImageView.setImageBitmap(profilePhoto);
                         }
                     }, null);
 
         }
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,11 +161,44 @@ public class ProfileFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK)
+            switch (requestCode) {
+                case GALLERY_REQUEST:
+                    Uri selectedImage = data.getData();
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), selectedImage);
+                        // Resize image before saving it.
+                        bitmap = PhotoUtils.resizeBitmap(bitmap);
+
+                        profilePhoto = bitmap;
+                        profileImageView.setImageBitmap(profilePhoto);
+                        PhotoUploader photoUploader = new PhotoUploader(profilePhoto);
+                        photoUploader.upload(LowkeyApplication.currentUserManager.getProfilePictureName(), new Callback() {
+                            @Override
+                            public void handle() {
+                                Toast.makeText(getContext(), "Profile picture updated", Toast.LENGTH_LONG).show();
+                            }
+                        }, new Callback() {
+                            @Override
+                            public void handle() {
+                                Toast.makeText(getContext(), "Profile picture could not be updated", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (IOException e) {
+                        Log.i("GalleryRequest", e.getMessage());
+                    }
+                    break;
+            }
+    }
+
     private void showEditDialog(){
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         final EditText fullname = new EditText(getContext());
         final EditText age = new EditText(getContext());
-        final EditText radius = new EditText(getContext());
 
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -151,30 +207,37 @@ public class ProfileFragment extends Fragment {
         fullname.setHint("Title");
         fullname.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
         layout.addView(fullname); // Notice this is an add method
-        // Add another TextView here for the "Description" label
-        age.setHint("Age");
-//        age.setText(LowkeyApplication.currentUserManager.getUserModel().getAge());
-        layout.addView(age); // Another add method
 
-        radius.setHint("Radius");
-//        radius.setText(LowkeyApplication.currentUserManager.getUserModel().getRadius());
-        layout.addView(radius);
+        age.setHint("Age");
+        age.setText(LowkeyApplication.currentUserManager.getUserModel().getAge() + "");
+        layout.addView(age); // Another add method
 
         alert.setView(layout);
 
         alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                final int ageParsed = Integer.parseInt(age.getText().toString());
+                final String fullName = fullname.getText().toString();
+
                 UserManager userManager = new UserManager();
-                UpdateUserModel updateUserModel = new UpdateUserModel(LowkeyApplication.currentUserManager.getUserModel().getId(),
-                        fullname.getText().toString(),Integer.parseInt(age.getText().toString()),
-                        13,0,0,LowkeyApplication.currentUserManager.getUserModel().getGender(),"");
+                UpdateUserModel updateUserModel = new UpdateUserModel(
+                        LowkeyApplication.currentUserManager.getUserModel().getId(),
+                        fullName,
+                        ageParsed,
+                        13,
+                        0,
+                        0,
+                        LowkeyApplication.currentUserManager.getUserModel().getGender(),""
+                );
+
                 userManager.updateUser(updateUserModel, new OnSuccessHandler() {
                     @Override
                     public void handle(JSONObject response) {
-                        if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)){
-
+                        if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)){
+                            Toast.makeText(getContext(),"Profile updated",Toast.LENGTH_LONG).show();
+                            LowkeyApplication.currentUserManager.getUserModel().setAge(ageParsed);
+                            LowkeyApplication.currentUserManager.getUserModel().setFullName(fullName);
                         }
-                        Toast.makeText(getContext(),"Profile updated",Toast.LENGTH_LONG);
                     }
                 });
 
@@ -226,5 +289,11 @@ public class ProfileFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void askForImage() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
     }
 }

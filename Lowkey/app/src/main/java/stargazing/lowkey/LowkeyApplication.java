@@ -23,10 +23,10 @@ public class LowkeyApplication extends Application {
     public static LowkeyApplication instance;
     public static RequestQueueSingleton requestQueue;
 
-    public static ArrayList<IssueGetModel> staticIssues;
-
+    public static ArrayList<IssueGetModel> staticIssues = null;
 
     public static UserManager currentUserManager;
+    public static boolean isAnnonymous = false;
 
     public static RegisterModel registerModel = new RegisterModel("Iusztin Paul", "p.e.iusztin.d@gmail.com",
             21.21D, 45.44D, 3, 22, 0, "ceaispus");
@@ -60,6 +60,7 @@ public class LowkeyApplication extends Application {
             currentUserManager.logout();
         }
 
+        LowkeyApplication.isAnnonymous = false;
         currentUserManager = new UserManager();
     }
 

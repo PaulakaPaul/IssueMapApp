@@ -80,10 +80,11 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     private RapidFloatingActionButton rfaBtn;
     private RapidFloatingActionHelper rfabHelper;
 
-    private ImageView imageview1, imageview2, imageview3, imageview4, imageview5, imageview6;
+    private ImageView imageview1, imageview5, imageview6;
     private Button addphoto;
     private EditText title, description;
     private ConstraintLayout addIssueslayout;
+    private Button cancelButton;
 
     ConstraintLayout cc;
     private TextView title1,description1,up,down;
@@ -126,9 +127,18 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
         down = result.findViewById(R.id.down);
         rfaLayout = result.findViewById(R.id.activity_main_rfal);
         rfaBtn = result.findViewById(R.id.activity_main_rfab);
-        if(getActivity().getIntent().getStringExtra("Status")!=null)
-            if(!getActivity().getIntent().getStringExtra("Status").equals("offline"))
+
+        cancelButton = result.findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addIssueslayout.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        if(!LowkeyApplication.isAnnonymous)
             initFabs();
+
         initPhotos(result);
 
         return (result);
@@ -256,21 +266,6 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                 Picasso.get().load(file).resize(50, 50).centerCrop().into(imageview1);
             }
         }
-        if (requestCode == 102) {
-            if (resultCode == RESULT_OK) {
-                Picasso.get().load(file).resize(50, 50).centerCrop().into(imageview2);
-            }
-        }
-        if (requestCode == 103) {
-            if (resultCode == RESULT_OK) {
-                Picasso.get().load(file).resize(50, 50).centerCrop().into(imageview3);
-            }
-        }
-        if (requestCode == 104) {
-            if (resultCode == RESULT_OK) {
-                Picasso.get().load(file).resize(50, 50).centerCrop().into(imageview4);
-            }
-        }
         if (requestCode == 105) {
             if (resultCode == RESULT_OK) {
                 Picasso.get().load(file).resize(50, 50).centerCrop().into(imageview5);
@@ -323,7 +318,10 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
      */
     private void initPhotos(View v) {
         title = v.findViewById(R.id.editText2);
+        title.setText("Title");
         description = v.findViewById(R.id.editText3);
+        description.setText("Description");
+
         addphoto = v.findViewById(R.id.next4);
         addphoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,30 +337,7 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                 takePhoto(1);
             }
         });
-        imageview2 = v.findViewById(R.id.imageView4);
-        imageview2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto(2);
 
-            }
-        });
-        imageview3 = v.findViewById(R.id.imageView5);
-        imageview3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto(3);
-
-            }
-        });
-        imageview4 = v.findViewById(R.id.imageView6);
-        imageview4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePhoto(4);
-
-            }
-        });
         imageview5 = v.findViewById(R.id.imageView7);
         imageview5.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,7 +351,6 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
                 takePhoto(6);
-
             }
         });
     }
@@ -393,19 +367,9 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
                 .setIconPressedColor(0xffbf360c)
                 .setWrapper(0)
         );
-        items.add(new RFACLabelItem<Integer>()
-                .setLabel("Change radius")
-                .setResId(R.mipmap.ic_launcher)
-                .setIconNormalColor(0xffd84315)
-                .setIconPressedColor(0xffbf360c)
-                .setWrapper(1)
-        );
-        rfaContent
-                .setItems(items)
-        //.setIconShadowRadius(ABTextUtil.dip2px(context, 5))
-        //.setIconShadowColor(0x000)
-        //.setIconShadowDy(ABTextUtil.dip2px(context, 5))
-        ;
+
+        rfaContent.setItems(items);
+
         rfabHelper = new RapidFloatingActionHelper(
                 getContext().getApplicationContext(),
                 rfaLayout,
@@ -454,11 +418,6 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
             ArrayList<String> photoStrings = new ArrayList<>();
             Bitmap b = imageviewToBitmap(imageview1);
             photoStrings.add(getEncoded64ImageStringFromBitmap(b));
-            b = imageviewToBitmap(imageview2);
-            photoStrings.add(getEncoded64ImageStringFromBitmap(b));
-            b = imageviewToBitmap(imageview3);
-            photoStrings.add(getEncoded64ImageStringFromBitmap(b));
-            b = imageviewToBitmap(imageview4);
             photoStrings.add(getEncoded64ImageStringFromBitmap(b));
             b = imageviewToBitmap(imageview5);
             photoStrings.add(getEncoded64ImageStringFromBitmap(b));
