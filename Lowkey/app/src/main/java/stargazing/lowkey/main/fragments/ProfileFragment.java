@@ -61,6 +61,7 @@ public class ProfileFragment extends Fragment {
 
     private View rootView;
     private CircleImageView profileImageView;
+    private TextView username;
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,7 +102,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        TextView username = rootView.findViewById(R.id.username);
+        username = rootView.findViewById(R.id.username);
         TextView UID = rootView.findViewById(R.id.textView15);
 
         if(!LowkeyApplication.isAnnonymous) {
@@ -235,6 +236,7 @@ public class ProfileFragment extends Fragment {
                     public void handle(JSONObject response) {
                         if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)){
                             Toast.makeText(getContext(),"Profile updated",Toast.LENGTH_LONG).show();
+                            username.setText(fullName);
                             LowkeyApplication.currentUserManager.getUserModel().setAge(ageParsed);
                             LowkeyApplication.currentUserManager.getUserModel().setFullName(fullName);
                         }
