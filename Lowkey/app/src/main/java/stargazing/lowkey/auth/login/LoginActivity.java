@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
                                 overridePendingTransition(0, 0);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.putExtra("Status","online");
                                 startActivity(intent);
                                 overridePendingTransition(0, 0);
                             } else {

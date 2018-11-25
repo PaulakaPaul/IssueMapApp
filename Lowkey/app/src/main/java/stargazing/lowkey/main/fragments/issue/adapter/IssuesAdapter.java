@@ -23,7 +23,8 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private ArrayList<IssueGetModel> mIssues;
     public OnItemClickListenerNews listener;
-    public OnDeleteItem del;
+    public OnGreenClick gre;
+    public OnRedClick red;
 
     public IssuesAdapter(ArrayList<IssueGetModel> mIssues) {
         this.mIssues = mIssues;
@@ -33,8 +34,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         void onItemClick(IssuesViewHolder item, View v);
     }
 
-    public interface OnDeleteItem {
-        void deleteItem(IssuesViewHolder item, View v);
+    public interface OnGreenClick {
+        void onItemClick(IssuesViewHolder item, View v);
+    }
+    public interface OnRedClick {
+        void onItemClick(IssuesViewHolder item, View v);
     }
 
 
@@ -53,7 +57,11 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final IssuesViewHolder holderToBind = (IssuesViewHolder) holder;
             holderToBind.bindUI(issueDto);
             holderToBind.bind(holderToBind,listener);
-            //holderToBind.bindDelete(holderToBind,del);
+
+            holderToBind.bindLikes(holderToBind,gre);
+            holderToBind.bindDislikes(holderToBind,red);
+
+        //holderToBind.bindDelete(holderToBind,del);
 
     }
 
@@ -78,9 +86,16 @@ public class IssuesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.listener = listener;
     }
 
-    public void setDeleteListener(OnDeleteItem listener) {
-        this.del = listener;
+    public void setLike(OnGreenClick listener) {
+        this.gre = listener;
     }
+
+
+    public void setDislike(OnRedClick listener) {
+        this.red = listener;
+    }
+
+
 
     public void removeItem(int position) {
         if(position != -1 && position < mIssues.size()) {

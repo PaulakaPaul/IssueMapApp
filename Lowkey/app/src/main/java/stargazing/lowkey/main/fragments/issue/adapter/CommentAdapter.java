@@ -64,7 +64,7 @@ public class CommentAdapter  extends  RecyclerView.Adapter<CommentViewHolder>{
         final CommentGetModel issueDto = this.commentList.get(position);
         holder.bindUI(issueDto);
         CommentGetModel comDto = this.getCommentList().get(position);
-
+        holder.bind(issueDto,onItemClickListener);
 
     }
 

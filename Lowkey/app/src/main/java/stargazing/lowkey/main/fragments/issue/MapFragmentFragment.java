@@ -126,8 +126,9 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
         down = result.findViewById(R.id.down);
         rfaLayout = result.findViewById(R.id.activity_main_rfal);
         rfaBtn = result.findViewById(R.id.activity_main_rfab);
-
-        initFabs();
+        if(getActivity().getIntent().getStringExtra("Status")!=null)
+            if(!getActivity().getIntent().getStringExtra("Status").equals("offline"))
+            initFabs();
         initPhotos(result);
 
         return (result);

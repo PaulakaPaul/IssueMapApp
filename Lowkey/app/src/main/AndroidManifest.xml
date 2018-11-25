@@ -65,7 +65,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".main.fragments.issue.ComentsActivity"></activity>
+        <activity android:name=".main.fragments.issue.ComentsActivity" />
+        <activity android:name=".main.fragments.issue.ManageIssuesActivity"></activity>
     </application>
 
 </manifest>

@@ -57,5 +57,17 @@ public class CommentViewHolder extends RecyclerView.ViewHolder {
         return t.format(new Date());
     }
 
+    public void bind(final CommentGetModel item, final CommentAdapter.OnItemClickListener listener) {
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                listener.onLongClick(item,getAdapterPosition());
+                return true;// returning true instead of false, works for me
+            }
+        });
+
+    }
+
+
 
 }
