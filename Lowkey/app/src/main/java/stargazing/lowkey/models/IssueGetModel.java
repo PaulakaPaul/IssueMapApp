@@ -1,7 +1,6 @@
 package stargazing.lowkey.models;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class IssueGetModel {

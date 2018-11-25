@@ -23,7 +23,7 @@ public class LowkeyApplication extends Application {
     public static LowkeyApplication instance;
     public static RequestQueueSingleton requestQueue;
 
-    public static ArrayList<IssueGetModel> staticIssues;
+    public static ArrayList<IssueGetModel> staticIssues = null;
 
 
     public static UserManager currentUserManager;

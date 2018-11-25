@@ -11,13 +11,9 @@ import android.view.MenuItem;
 
 import com.jaeger.library.StatusBarUtil;
 
-import org.json.JSONObject;
 
-import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
-import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.main.fragments.issue.IssuesFragment;
-import stargazing.lowkey.managers.UserManager;
 
 public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,

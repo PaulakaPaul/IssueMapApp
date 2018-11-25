@@ -10,10 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.jjoe64.graphview.GraphView
-        android:visibility="gone"
-        android:layout_width="300dp"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.jjoe64.graphview.GraphView
+            android:visibility="gone"
+            android:layout_width="300dp"
+            android:layout_height="200dip"
+            android:id="@+id/graphHealthIndex" />
+
+        <TextView
+            android:text="Health Index"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
 
 </FrameLayout>
