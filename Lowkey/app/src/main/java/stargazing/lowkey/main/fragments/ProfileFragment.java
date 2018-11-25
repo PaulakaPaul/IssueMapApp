@@ -16,14 +16,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.photos.Callback;
 import stargazing.lowkey.api.photos.PhotoUploader;
 import stargazing.lowkey.api.photos.ProfilePhotoUploader;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.EntryActivity;
 import stargazing.lowkey.auth.register.RegisterActivity4PF;
+import stargazing.lowkey.managers.UserManager;
+import stargazing.lowkey.models.UpdateUserModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -137,19 +144,34 @@ public class ProfileFragment extends Fragment {
 
         // Add a TextView here for the "Title" label, as noted in the comments
         fullname.setHint("Title");
+        fullname.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
         layout.addView(fullname); // Notice this is an add method
         // Add another TextView here for the "Description" label
         age.setHint("Age");
+//        age.setText(LowkeyApplication.currentUserManager.getUserModel().getAge());
         layout.addView(age); // Another add method
 
         radius.setHint("Radius");
+//        radius.setText(LowkeyApplication.currentUserManager.getUserModel().getRadius());
         layout.addView(radius);
 
         alert.setView(layout);
 
         alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                UserManager userManager = new UserManager();
+                UpdateUserModel updateUserModel = new UpdateUserModel(LowkeyApplication.currentUserManager.getUserModel().getId(),
+                        fullname.getText().toString(),Integer.parseInt(age.getText().toString()),
+                        13,0,0,LowkeyApplication.currentUserManager.getUserModel().getGender(),"");
+                userManager.updateUser(updateUserModel, new OnSuccessHandler() {
+                    @Override
+                    public void handle(JSONObject response) {
+                        if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)){
 
+                        }
+                        Toast.makeText(getContext(),"Profile updated",Toast.LENGTH_LONG);
+                    }
+                });
 
             }
         });
