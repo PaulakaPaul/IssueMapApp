@@ -5,10 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".main.fragments.StatisticFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="statistic" />
+        android:layout_height="match_parent" />
+
+    <com.jjoe64.graphview.GraphView
+        android:visibility="gone"
+        android:layout_width="300dp"
+        android:layout_height="200dip"
+        android:id="@+id/graph" />
 
 </FrameLayout>

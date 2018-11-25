@@ -1,6 +1,5 @@
 package stargazing.lowkey.api.views;
 
-import android.preference.PreferenceActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,6 +12,7 @@ import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestItecWrapper;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
+import stargazing.lowkey.models.UserModel;
 import stargazing.lowkey.serializers.LoginSerializer;
 import stargazing.lowkey.serializers.RegisterSerializer;
 
@@ -22,6 +22,7 @@ public class UserView extends RequestItecWrapper {
     private static final String USER_BY_EMAIL_RELATIVE_URL = "/api/Account/GetUserByEmail";
     private static final String IS_AUTHORIZED_URL = "/api/Account/IsAuthorized";
     private static final String REGISTER_URL = "/api/Account/Register";
+    private static final String UPDATE_URL = "/api/Account/Update";
     private static final String TOKEN_URL = "/api/Token";
 
     public static final String EMAIL_QUERY_PARAM_KEY = "email";
@@ -39,6 +40,10 @@ public class UserView extends RequestItecWrapper {
         } else {
             Log.e("getUserByEmail", "No email to query with");
         }
+    }
+
+    public void updateUser(JSONObject body, OnSuccessHandler onSuccessHandler) {
+        super.post(UPDATE_URL, null, body, onSuccessHandler);
     }
 
     public void getIsAuthorized(String email, Map<String, String> header, OnSuccessHandler response) {

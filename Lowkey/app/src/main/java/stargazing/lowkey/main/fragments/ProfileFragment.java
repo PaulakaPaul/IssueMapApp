@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.photos.Callback;
+import stargazing.lowkey.api.photos.PhotoUploader;
+import stargazing.lowkey.api.photos.ProfilePhotoUploader;
 import stargazing.lowkey.auth.EntryActivity;
 import stargazing.lowkey.auth.register.RegisterActivity4PF;
 
@@ -39,6 +43,8 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Bitmap profilePhoto;
 
     View rootView;
 
@@ -108,6 +114,15 @@ public class ProfileFragment extends Fragment {
                 getActivity().overridePendingTransition(0, 0);
             }
         });
+
+        final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
+        photoUploader.download(LowkeyApplication.currentUserManager.getUserModel().getProfilePicture(),
+                new Callback() {
+                    @Override
+                    public void handle() {
+                        profilePhoto = photoUploader.getPhoto();
+                    }
+                }, null);
 
         return rootView;
     }

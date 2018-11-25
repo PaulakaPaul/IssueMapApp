@@ -446,10 +446,7 @@ public class MapFragmentFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private Bitmap imageviewToBitmap(ImageView imag) {
-
         return ((BitmapDrawable) imag.getDrawable()).getBitmap();
-
-
     }
 
     private IssueModel getData() {

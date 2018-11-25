@@ -7,26 +7,17 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.jaeger.library.StatusBarUtil;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
-import stargazing.lowkey.api.wrapper.OnSuccessListHandler;
 import stargazing.lowkey.main.fragments.issue.IssuesFragment;
-import stargazing.lowkey.managers.CommentManager;
-import stargazing.lowkey.managers.IssueManager;
-import stargazing.lowkey.managers.StatisticsManager;
 import stargazing.lowkey.managers.UserManager;
-import stargazing.lowkey.models.IssueGetModel;
 
 public class MainActivity extends AppCompatActivity implements
         ProfileFragment.OnFragmentInteractionListener,

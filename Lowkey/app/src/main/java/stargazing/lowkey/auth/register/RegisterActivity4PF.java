@@ -26,6 +26,9 @@ import java.io.IOException;
 import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.photos.Callback;
+import stargazing.lowkey.api.photos.PhotoNameTranslator;
+import stargazing.lowkey.api.photos.ProfilePhotoUploader;
 import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.EntryActivity;
@@ -45,6 +48,7 @@ public class RegisterActivity4PF extends AppCompatActivity {
     private String gender;
     private int radius;
     public Double latitude, longitude;
+    private Bitmap profilePhoto;
 
 
     public static final int SMALL = 1;
@@ -139,6 +143,8 @@ public class RegisterActivity4PF extends AppCompatActivity {
                         // Resize image before saving it.
                         bitmap = resizeBitmap(bitmap,SMALL);
                         edit.setImageBitmap(bitmap);
+
+                        profilePhoto = bitmap;
                     } catch (IOException e) {
                         Log.i("GalleryRequest", e.getMessage());
                     }
@@ -191,18 +197,45 @@ public class RegisterActivity4PF extends AppCompatActivity {
     }
 
     private void register(){
-        final RegisterModel registerModel = new RegisterModel(fullname, email, latitude, longitude,
-                radius, age, mapGender(gender), password);
+        final RegisterModel registerModel;
+        if(profilePhoto != null)
+            registerModel = new RegisterModel(fullname, email, latitude, longitude,
+                radius, age, mapGender(gender), password, PhotoNameTranslator.getPhotoNameFromEmail(email));
+        else
+            registerModel = new RegisterModel(fullname, email, latitude, longitude,
+                    radius, age, mapGender(gender), password);
 
         LowkeyApplication.currentUserManager.postRegisterUser(registerModel, new OnSuccessHandler() {
             @Override
             public void handle(JSONObject response) {
                 if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
-                    Toast.makeText(RegisterActivity4PF.this,
-                            "Your account was created succesfully",
-                            Toast.LENGTH_LONG).show();
 
-                    goToEntryActivity();
+                    if(profilePhoto != null) {
+                        ProfilePhotoUploader photoUploader = new ProfilePhotoUploader(profilePhoto);
+                        String parsedEmail = PhotoNameTranslator.getPhotoNameFromEmail(email);
+                        photoUploader.upload(parsedEmail,
+                                new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        Toast.makeText(RegisterActivity4PF.this,
+                                                "Your account was created succesfully",
+                                                Toast.LENGTH_LONG).show();
+                                        goToEntryActivity();
+                                    }
+                                }, new Callback() {
+                                    @Override
+                                    public void handle() {
+                                        Toast.makeText(RegisterActivity4PF.this,
+                                                "Your account could not be created",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                    } else {
+                        Toast.makeText(RegisterActivity4PF.this,
+                                "Your account was created succesfully",
+                                Toast.LENGTH_LONG).show();
+                        goToEntryActivity();
+                    }
                 }
                 else
                     Toast.makeText(RegisterActivity4PF.this,

@@ -7,8 +7,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.managers.StatisticsManager;
+import stargazing.lowkey.models.MonthlyIssuesModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +41,13 @@ public class StatisticFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private View rootView;
+    private GraphView graph;
+    private ProgressBar progressBar;
+
     private OnFragmentInteractionListener mListener;
+
+    private StatisticsManager statisticsManager = new StatisticsManager();
 
     public StatisticFragment() {
         // Required empty public constructor
@@ -59,13 +78,52 @@ public class StatisticFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_statistic, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_statistic, container, false);
+
+        progressBar = rootView.findViewById(R.id.progressBar);
+        graph = rootView.findViewById(R.id.graph);
+
+        switchView(true);
+        populateGraph();
+        switchView(false);
+
+        return rootView;
+    }
+
+    private void populateGraph() {
+        statisticsManager.getStats(new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+
+                List<MonthlyIssuesModel> monthlyIssuesModels = statisticsManager.getStatisticsModel().getMonthlyData();
+
+                int dataPointsLength = monthlyIssuesModels.size() < 7 ? monthlyIssuesModels.size() : 7;
+                DataPoint[] dataPoints = new DataPoint[dataPointsLength];
+
+                for(int i = 0; i < dataPointsLength; i++) {
+                    double x = monthlyIssuesModels.get(i).getMonthNumber();
+                    double y = (double) monthlyIssuesModels.get(i).getSolvedIssues() /
+                            (double) monthlyIssuesModels.get(i).getCreatedIssues();
+
+                    dataPoints[i] = new DataPoint(x, y);
+                }
+
+                LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
+                graph.addSeries(series);
+            }
+        });
+    }
+
+    private void switchView(boolean isLoading) {
+        graph.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
