@@ -12,14 +12,19 @@ import stargazing.lowkey.api.wrapper.RequestQueueSingleton;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.managers.UserManager;
 import stargazing.lowkey.models.CommentModel;
+import stargazing.lowkey.models.IssueGetModel;
 import stargazing.lowkey.models.IssueModel;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
+import stargazing.lowkey.models.UpdateUserModel;
 
 public class LowkeyApplication extends Application {
 
     public static LowkeyApplication instance;
     public static RequestQueueSingleton requestQueue;
+
+    public static ArrayList<IssueGetModel> staticIssues;
+
 
     public static UserManager currentUserManager;
 
@@ -37,6 +42,9 @@ public class LowkeyApplication extends Application {
             UUID.fromString("3605886a-93f9-4702-a381-10f0860bcb85"),
             "Content from stargazing edited", UUID.fromString("219c01f9-d6a8-4412-99d8-5e286866dcb4"));
 
+    public static UpdateUserModel updateUserModel = new UpdateUserModel(UUID.fromString("219c01f9-d6a8-4412-99d8-5e286866dcb4"),
+            "Lowkey Updated", 30, 10, 1, 10, 10, "new photo");
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -45,7 +53,6 @@ public class LowkeyApplication extends Application {
         requestQueue = RequestQueueSingleton.getInstance(this);
 
         currentUserManager = getCurrentUserManager();
-        logout();
     }
 
     public void logout() {

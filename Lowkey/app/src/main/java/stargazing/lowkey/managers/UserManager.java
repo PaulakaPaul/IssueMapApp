@@ -14,7 +14,9 @@ import stargazing.lowkey.api.wrapper.OnSuccessHandler;
 import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.models.LoginModel;
 import stargazing.lowkey.models.RegisterModel;
+import stargazing.lowkey.models.UpdateUserModel;
 import stargazing.lowkey.models.UserModel;
+import stargazing.lowkey.serializers.UpdateUserModelSerializer;
 import stargazing.lowkey.serializers.UserSerializer;
 import stargazing.lowkey.utils.SpUtils;
 
@@ -49,7 +51,7 @@ public class UserManager {
     }
 
     public void IsAuthorized(String token, OnSuccessHandler onSuccessHandler) {
-        Map<String, String> header= new HashMap<>();
+        Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + token);
 
         OnSuccessHandler handleUserModel = getOnSuccessHandlerForUserModelRequest(onSuccessHandler);
@@ -57,41 +59,63 @@ public class UserManager {
     }
 
     public void isUserLoggedIn(final OnSuccessHandler loggedInHandler) {
-        if(UserManager.hasCachedCredentials()) {
+        if (UserManager.hasCachedCredentials()) {
             this.email = UserManager.getCachedEmail();
             LoginModel loginModel = UserManager.getChangedLoginModel();
 
             postLoginUser(loginModel, new OnSuccessHandler() {
                 @Override
                 public void handle(JSONObject response) {
-                       if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
-                            IsAuthorized(token, new OnSuccessHandler() {
-                                @Override
-                                public void handle(JSONObject response) {
-                                    if(loggedInHandler != null)
-                                        loggedInHandler.handle(response);
-                                }
-                            });
-                       }
+                    if (!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                        IsAuthorized(token, new OnSuccessHandler() {
+                            @Override
+                            public void handle(JSONObject response) {
+                                if (loggedInHandler != null)
+                                    loggedInHandler.handle(response);
+                            }
+                        });
+                    }
 
-                       if(loggedInHandler != null)
-                           loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                    if (loggedInHandler != null)
+                        loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
                 }
             });
 
-        } else if(loggedInHandler != null) {
+        } else if (loggedInHandler != null) {
             loggedInHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
         }
+    }
+
+    public void updateUser(final UpdateUserModel userModel, final OnSuccessHandler onSuccessHandler) {
+        UpdateUserModelSerializer userSerializer = new UpdateUserModelSerializer(userModel);
+        JSONObject jsonObject = userSerializer.getUpdateUserModelSerialized();
+
+        OnSuccessHandler validationHandler = new OnSuccessHandler() {
+            @Override
+            public void handle(JSONObject response) {
+                if (onSuccessHandler != null)
+                    try {
+                        if(response.getBoolean(RESPONSE_SUCCESSFUL_KEY))
+                            onSuccessHandler.handle(response);
+                         else
+                             onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                    } catch (JSONException e) {
+                        onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
+                    }
+            }
+        };
+
+        userView.updateUser(jsonObject, validationHandler);
     }
 
     public static boolean hasCachedCredentials() {
         SpUtils spUtils = new SpUtils();
         String email = spUtils.loadString(SHARED_PREF_EMAIL_KEY);
-        if(email == null)
+        if (email == null)
             return false;
 
         String password = spUtils.loadString(SHARED_PREF_PASS_KEY);
-        if(password == null)
+        if (password == null)
             return false;
 
         return !email.equals(SHARED_PREF_EMPTY_VALUE) &&
@@ -109,7 +133,7 @@ public class UserManager {
     }
 
     public static LoginModel getChangedLoginModel() {
-        if(!hasCachedCredentials())
+        if (!hasCachedCredentials())
             return null;
 
         return new LoginModel(getCachedEmail(), getCachedPassword());
@@ -146,20 +170,21 @@ public class UserManager {
             public void handle(JSONObject response) {
                 token = getTokenFromResponse(response);
 
-                if (onSuccessHandler != null && token != null) {
+                if (token != null) {
                     requestUserModel(new OnSuccessHandler() {
                         @Override
                         public void handle(JSONObject response) {
-                            if(!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
+                            if (!response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)) {
                                 cacheCredentials(loginModel.getEmail(), loginModel.getPassword());
-                                onSuccessHandler.handle(response);
-                            } else {
+                                if (onSuccessHandler != null)
+                                    onSuccessHandler.handle(response);
+                            } else if (onSuccessHandler != null) {
                                 onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
                             }
                         }
                     });
 
-                } else if(onSuccessHandler != null)
+                } else if (onSuccessHandler != null)
                     onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
             }
         };
@@ -213,7 +238,7 @@ public class UserManager {
                     if (onSuccessHandler != null)
                         onSuccessHandler.handle(response);
 
-                } else if(onSuccessHandler != null) {
+                } else if (onSuccessHandler != null) {
                     onSuccessHandler.handle(RequestWrapper.FAIL_JSON_RESPONSE_VALUE);
                 }
             }
@@ -237,7 +262,9 @@ public class UserManager {
         return token;
     }
 
-    public UserModel getUserModel() {return this.userModel;}
+    public UserModel getUserModel() {
+        return this.userModel;
+    }
 
     public void setEmail(String email) {
         this.email = email;

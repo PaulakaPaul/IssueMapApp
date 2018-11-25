@@ -1,6 +1,7 @@
 package stargazing.lowkey.main.fragments.issue;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -10,22 +11,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 
+import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.wrapper.OnSuccessListHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
+import stargazing.lowkey.auth.register.RegisterActivity3AG;
 import stargazing.lowkey.main.fragments.issue.adapter.IssuesAdapter;
-import stargazing.lowkey.models.IssueModel;
+import stargazing.lowkey.main.fragments.issue.adapter.IssuesViewHolder;
+import stargazing.lowkey.managers.IssueManager;
+import stargazing.lowkey.models.CommentGetModel;
+import stargazing.lowkey.models.IssueGetModel;
 
 public class MapListFragmentFragment extends Fragment {
 
     private static final String KEY_POSITION = "position";
-    //If there's need for a callback from the Parrent
     RecyclerView rvContacts;
+    IssueManager issueManager = new IssueManager();
+    ArrayList<IssueGetModel> list = new ArrayList<IssueGetModel>();
 
     static MapListFragmentFragment newInstance(int position) {
         MapListFragmentFragment frag = new MapListFragmentFragment();
         Bundle args = new Bundle();
-//f
         args.putInt(KEY_POSITION, position);
         frag.setArguments(args);
 
@@ -42,23 +52,7 @@ public class MapListFragmentFragment extends Fragment {
         //mainCallback.DoSomething();
 
         rvContacts = (RecyclerView) result.findViewById(R.id.issuerv);
-        // Initialize contacts
-        // Create adapter passing in the sample user data
-        ArrayList<IssueModel> list = new ArrayList<IssueModel>();
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-
-        IssuesAdapter adapter = new IssuesAdapter(list, getContext().getApplicationContext(), rvContacts);
-        // Attach the adapter to the recyclerview to populate items
-        rvContacts.setAdapter(adapter);
-        // Set layout manager to position the items
-        rvContacts.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
-
+        putIssues();
 
         return (result);
     }
@@ -66,39 +60,61 @@ public class MapListFragmentFragment extends Fragment {
     private void initAdapter() {
         // Initialize contacts
         // Create adapter passing in the sample user data
-        final ArrayList<IssueModel> list = new ArrayList<IssueModel>();
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
-        list.add(new IssueModel());
 
-        final IssuesAdapter adapter = new IssuesAdapter(list, getContext().getApplicationContext(), rvContacts);
-        // Attach the adapter to the recyclerview to populate items
-        adapter.setOnLoadMoreListener(new IssuesAdapter.OnLoadMoreListener() {
+        final IssuesAdapter adapter = new IssuesAdapter(list);
+        adapter.setListener(new IssuesAdapter.OnItemClickListenerNews() {
             @Override
-            public void onLoadMore() {
-                final IssueModel m = null;
-                list.add(m);
-                adapter.notifyItemInserted(list.size() - 1);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.removeItem(list.indexOf(m));
-                    }
-                }, 2000);
-
-            }});
-            rvContacts.setAdapter(adapter);
-            // Set layout manager to position the items
+            public void onItemClick(IssuesViewHolder item, View v) {
+                Intent intent = new Intent(getContext(), ComentsActivity.class);
+                startActivity(intent);
+            }
+        });
+        // Attach the adapter to the recyclerview to populate items
+        rvContacts.setAdapter(adapter);
+        // Set layout manager to position the items
         rvContacts.setLayoutManager(new
 
-            LinearLayoutManager(getContext().
+                LinearLayoutManager(getContext().
 
-            getApplicationContext()));
+                getApplicationContext()));
 
-        }
     }
+
+    private void putIssues() {
+
+        issueManager.getAll(new OnSuccessListHandler() {
+            @Override
+            public void handle(JSONArray response) {
+                if (!response.equals(RequestWrapper.FAIL_JSON_LIST_RESPONSE_VALUE)) {
+                    list = issueManager.getIssues();
+                    LowkeyApplication.staticIssues = list;
+                    final IssuesAdapter adapter = new IssuesAdapter(list);
+                    adapter.setListener(new IssuesAdapter.OnItemClickListenerNews() {
+                        @Override
+                        public void onItemClick(IssuesViewHolder item, View v) {
+                           boolean found = false;
+                            Intent intent = new Intent(getContext(), ComentsActivity.class);
+                            int position = item.getAdapterPosition();
+                            IssueGetModel m = adapter.getMsg(position);
+                            for (IssueGetModel i : list) {
+                                if (i.getId().equals(m.getId())){
+                                    intent.putExtra("index", list.indexOf(i));
+                                    found = true ;
+                                }}
+                            if(!found)
+                                intent.putExtra("index", -1);
+                            getActivity().overridePendingTransition(0, 0);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(0, 0);
+
+
+                        }
+                    });
+                    rvContacts.setAdapter(adapter);
+                    rvContacts.setLayoutManager(new LinearLayoutManager(getContext().getApplicationContext()));
+                }
+            }
+        });
+    }
+}
 

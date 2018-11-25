@@ -35,4 +35,8 @@ public class StatisticsManager {
         StatisticsSerializer statisticsSerializer = new StatisticsSerializer(response);
         return statisticsSerializer.getStatisticsModel();
     }
+
+    public StatisticsModel getStatisticsModel() {
+        return statisticsModel;
+    }
 }

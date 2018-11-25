@@ -38,7 +38,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageView9"
+                android:id="@+id/photo"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
@@ -51,7 +51,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -61,7 +61,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/imageView9"
+                app:layout_constraintStart_toEndOf="@+id/photo"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -74,36 +74,39 @@
                 android:text="Lorem ipsum dolren dadaLorem ipsum dolren dadaLorem ipsum dolren dadaLorem ipsum dolren dadaLorem ipsum dolren dadaLorem ipsum dolren dadaLorem ipsum dolren daLorem ipsum dolren dadaLorem ipsum dolren dadada"
                 android:textColor="@android:color/white"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintTop_toBottomOf="@+id/title" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/timelocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:text="just moments ago at LOCATION"
                 android:textColor="@android:color/darker_gray"
-                app:layout_constraintStart_toEndOf="@+id/imageView9"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
+                app:layout_constraintStart_toEndOf="@+id/photo"
+                app:layout_constraintTop_toBottomOf="@+id/username" />
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:background="@drawable/frame_orange"
                 android:text="THERE WAS SOME SORT OF PROBLEM"
                 android:textColor="@android:color/white"
                 android:textSize="16dp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+                app:layout_constraintTop_toBottomOf="@+id/photo" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/down"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -113,11 +116,11 @@
                 android:text="1000 declined"
                 android:textColor="@android:color/holo_red_light"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView11"
+                app:layout_constraintStart_toEndOf="@+id/up"
                 app:layout_constraintTop_toBottomOf="@+id/description" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/up"
                 android:layout_width="wrap_content"
                 android:layout_height="19dp"
                 android:layout_marginStart="8dp"
