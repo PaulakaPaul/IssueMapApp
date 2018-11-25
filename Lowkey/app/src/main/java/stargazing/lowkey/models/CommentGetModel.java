@@ -56,4 +56,6 @@ public class CommentGetModel {
     public void setEditedAt(long editedAt) {
         EditedAt = editedAt;
     }
+
+
 }

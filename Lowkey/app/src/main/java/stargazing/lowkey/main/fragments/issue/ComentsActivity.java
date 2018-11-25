@@ -3,6 +3,8 @@ package stargazing.lowkey.main.fragments.issue;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.constraint.ConstraintLayout;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -69,8 +72,10 @@ public class ComentsActivity extends AppCompatActivity {
         rvComments = findViewById(R.id.rvComments);
         llAddComment = findViewById(R.id.llAddComment);
         button = findViewById(R.id.sendComment);
-
-        StatusBarUtil.setTransparent(this);
+        if(getIntent().getStringExtra("Status")!=null)
+            if(getIntent().getStringExtra("Status").equals("offline"))
+            button.setVisibility(View.INVISIBLE);
+            StatusBarUtil.setTransparent(this);
         index = getIntent().getIntExtra("index", 0);
         inputTxt = findViewById(R.id.chat_input_msg);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -83,6 +88,7 @@ public class ComentsActivity extends AppCompatActivity {
             commentArrayList = new ArrayList<>();
 
         }
+
         drawingStartLocation = getIntent().getIntExtra(ARG_DRAWING_START_LOCATION, 0);
         if (savedInstanceState == null) {
             contentRoot.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -130,6 +136,10 @@ public class ComentsActivity extends AppCompatActivity {
         //return new CommentGetModel();
     }
 
+    private CommentModel createRequestComment(CommentGetModel c){
+        return new CommentModel(c.getId(),issue.getId(),c.getContent(),LowkeyApplication.currentUserManager.getUserModel().getId());
+    }
+
     private CommentGetModel createGetComment(CommentModel commentModel){
         return new CommentGetModel(commentModel.getId(),commentModel.getContent(),LowkeyApplication.currentUserManager.getUserModel().getFullName(),new Timestamp((System.currentTimeMillis())).getTime(),new Timestamp((System.currentTimeMillis())).getTime());
     }
@@ -146,11 +156,54 @@ public class ComentsActivity extends AppCompatActivity {
 
     }
 
+    private void showEdit(final CommentGetModel c,final int pos){
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(getApplicationContext());
+        alert.setMessage("Enter Your Message");
+        alert.setTitle("Enter Your Title");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                Editable YouEditTextValue = edittext.getText();
+                //OR
+                String YourEditTextValue = edittext.getText().toString();
+                c.setContent(YourEditTextValue);
+                commentsAdapter.notifyItemChanged(pos);
+                commentManager.update(createRequestComment(c), new OnSuccessHandler() {
+                    @Override
+                    public void handle(JSONObject response) {
+                        if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE))
+                            Log.e("EDIT C: ","FAILED");
+                    }
+                });
+            }
+        });
+
+        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+    }
 
     private void populateWithData() {
 
         try {
             commentsAdapter = new CommentAdapter(commentArrayList,this);
+            commentsAdapter.setListener(new CommentAdapter.OnItemClickListener() {
+                @Override
+                public boolean onLongClick(CommentGetModel item, int pos) {
+                    if(item.getCreator().equals(LowkeyApplication.currentUserManager.getUserModel().getFullName()))
+                    showEdit(item,pos);
+                    return false;
+                }
+            });
             rvComments.setAdapter(commentsAdapter);
             int newMsgPosition = LowkeyApplication.staticIssues.get(index).getComments().size() - 1;
             rvComments.scrollToPosition(newMsgPosition);

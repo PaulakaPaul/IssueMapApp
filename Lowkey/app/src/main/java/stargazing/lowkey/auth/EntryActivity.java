@@ -58,10 +58,23 @@ public class EntryActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+        facebooklogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                overridePendingTransition(0, 0);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("Status","offline");
+                startActivity(intent);
+                overridePendingTransition(0, 0);
+            }
+        });
 
 
     }
+    @Override
+    public void onBackPressed() {
 
+    }
     private void initUI() {
         progressBar = findViewById(R.id.progressBar);
         constraintLayout = findViewById(R.id.constraintLayout);

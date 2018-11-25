@@ -63,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
 
     }

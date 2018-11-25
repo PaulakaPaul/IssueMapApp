@@ -1,22 +1,36 @@
 package stargazing.lowkey.main.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import stargazing.lowkey.LowkeyApplication;
 import stargazing.lowkey.R;
 import stargazing.lowkey.api.photos.Callback;
 import stargazing.lowkey.api.photos.PhotoUploader;
 import stargazing.lowkey.api.photos.ProfilePhotoUploader;
+import stargazing.lowkey.api.wrapper.OnSuccessHandler;
+import stargazing.lowkey.api.wrapper.RequestWrapper;
 import stargazing.lowkey.auth.EntryActivity;
+import stargazing.lowkey.auth.register.RegisterActivity4PF;
+import stargazing.lowkey.managers.UserManager;
+import stargazing.lowkey.models.UpdateUserModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,16 +93,34 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-        TextView test = rootView.findViewById(R.id.test);
-        test.setOnClickListener(new View.OnClickListener() {
+        TextView username = rootView.findViewById(R.id.username);
+        TextView UID = rootView.findViewById(R.id.textView15);
+
+        Button button = rootView.findViewById(R.id.next7);
+        Button log_out = rootView.findViewById(R.id.next6);
+        if(getActivity().getIntent().getStringExtra("Status")!=null)
+        if(getActivity().getIntent().getStringExtra("Status").equals("offline")) {
+            username.setText("You are offline");
+            button.setVisibility(View.INVISIBLE);
+            UID.setText("Log in to have a full application experience !");
+        }
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext().getApplicationContext(), EntryActivity.class);
-                startActivity(intent);
-
+                showEditDialog();
             }
         });
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LowkeyApplication.instance.logout();
+                Intent intent = new Intent(getContext(), EntryActivity.class);
+                getActivity().overridePendingTransition(0, 0);
 
+                startActivity(intent);
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
 
         final ProfilePhotoUploader photoUploader = new ProfilePhotoUploader();
         photoUploader.download(LowkeyApplication.currentUserManager.getUserModel().getProfilePicture(),
@@ -101,7 +133,57 @@ public class ProfileFragment extends Fragment {
 
         return rootView;
     }
+    private void showEditDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+        final EditText fullname = new EditText(getContext());
+        final EditText age = new EditText(getContext());
+        final EditText radius = new EditText(getContext());
 
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        // Add a TextView here for the "Title" label, as noted in the comments
+        fullname.setHint("Title");
+        fullname.setText(LowkeyApplication.currentUserManager.getUserModel().getFullName());
+        layout.addView(fullname); // Notice this is an add method
+        // Add another TextView here for the "Description" label
+        age.setHint("Age");
+//        age.setText(LowkeyApplication.currentUserManager.getUserModel().getAge());
+        layout.addView(age); // Another add method
+
+        radius.setHint("Radius");
+//        radius.setText(LowkeyApplication.currentUserManager.getUserModel().getRadius());
+        layout.addView(radius);
+
+        alert.setView(layout);
+
+        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                UserManager userManager = new UserManager();
+                UpdateUserModel updateUserModel = new UpdateUserModel(LowkeyApplication.currentUserManager.getUserModel().getId(),
+                        fullname.getText().toString(),Integer.parseInt(age.getText().toString()),
+                        13,0,0,LowkeyApplication.currentUserManager.getUserModel().getGender(),"");
+                userManager.updateUser(updateUserModel, new OnSuccessHandler() {
+                    @Override
+                    public void handle(JSONObject response) {
+                        if(response.equals(RequestWrapper.FAIL_JSON_RESPONSE_VALUE)){
+
+                        }
+                        Toast.makeText(getContext(),"Profile updated",Toast.LENGTH_LONG);
+                    }
+                });
+
+            }
+        });
+
+        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

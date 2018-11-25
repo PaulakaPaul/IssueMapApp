@@ -15,6 +15,7 @@ import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import stargazing.lowkey.R;
+import stargazing.lowkey.api.views.IssuesView;
 import stargazing.lowkey.models.IssueGetModel;
 
 public class IssuesViewHolder extends RecyclerView.ViewHolder {
@@ -23,6 +24,8 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
     //ImageView image;
     TextView title;
     TextView description;
+    TextView gre;
+    TextView red;
     TextView timelocation;
     CircleImageView userImage;
     Double latitude;
@@ -39,6 +42,8 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
             description = itemView.findViewById(R.id.description);
             timelocation = itemView.findViewById(R.id.timelocation);
             createdBy = itemView.findViewById(R.id.username);
+            gre = itemView.findViewById(R.id.up);
+            red = itemView.findViewById(R.id.down);
 
         }
     }
@@ -52,15 +57,31 @@ public class IssuesViewHolder extends RecyclerView.ViewHolder {
            createdBy.setText(issueModel.getCreator());
            String s = localTime(issueModel.getCreatedAt()) + "at " + latitude + ", " + longitude;
            timelocation.setText(s);
-           s = "Approved " + issueModel.getUpVotes();
-           up.setText(s);
-           s = "Declined " + issueModel.getDownVotes();
-           down.setText(s);
+           s = issueModel.getUpVotes() + " Approved";
+           gre.setText(s);
+           s = issueModel.getDownVotes() + " Declined";
+           red.setText(s);
        }catch (NullPointerException npe){
 
        }
 
     }
+
+    public void bindLikes(final IssuesViewHolder issueGetModel, final IssuesAdapter.OnGreenClick listener){
+        gre.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(issueGetModel,v);
+            }
+        });
+    }
+    public void bindDislikes(final IssuesViewHolder issueGetModel,final IssuesAdapter.OnRedClick listener){
+        red.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(issueGetModel,v);
+            }
+        });
+    }
+
 
     public void bind(final IssuesViewHolder item, final IssuesAdapter.OnItemClickListenerNews listener) {
 
